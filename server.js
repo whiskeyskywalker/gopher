@@ -111,7 +111,13 @@ return;
 
 const parsed = url.parse(req.url, true);
 
-if (parsed.pathname !== ‘/gopher’) {
+if (parsed.pathname === “/” || parsed.pathname === “/health”) {
+res.writeHead(200, headers);
+res.end(JSON.stringify({ status: “ok”, service: “gopher-proxy” }));
+return;
+}
+
+if (parsed.pathname !== “/gopher”) {
 res.writeHead(404, headers);
 res.end(JSON.stringify({ error: ‘Not found. Use /gopher?host=&port=&selector=’ }));
 return;
