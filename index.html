@@ -11,458 +11,181 @@
   <link rel="manifest" href="manifest.json">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
-
   <style>
     :root {
-      --bg:        #f5f5f0;
-      --surface:   #ffffff;
-      --border:    #d0d0c8;
-      --accent:    #007a3d;
-      --accent2:   #0066aa;
-      --text:      #1a1a1a;
-      --muted:     #888880;
-      --danger:    #ff4455;
-      --dir-color: #0066aa;
-      --txt-color: #1a1a1a;
+      --bg:           #f5f5f0;
+      --surface:      #ffffff;
+      --border:       #d0d0c8;
+      --accent:       #007a3d;
+      --accent2:      #0066aa;
+      --text:         #1a1a1a;
+      --muted:        #888880;
+      --danger:       #cc2233;
+      --dir-color:    #0066aa;
+      --txt-color:    #1a1a1a;
       --search-color: #b36000;
-      --img-color: #6644bb;
-      --info-color: #999990;
-      --safe-top: env(safe-area-inset-top, 0px);
-      --safe-bottom: env(safe-area-inset-bottom, 0px);
-      --font: 'IBM Plex Mono', monospace;
+      --img-color:    #6644bb;
+      --info-color:   #999990;
+      --safe-top:     env(safe-area-inset-top, 0px);
+      --safe-bottom:  env(safe-area-inset-bottom, 0px);
+      --font:         'IBM Plex Mono', monospace;
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--font); overflow: hidden; }
 
-    html, body {
-      height: 100%;
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--font);
-      overflow: hidden;
-    }
+    #app { display: flex; flex-direction: column; height: 100dvh; padding-top: var(--safe-top); padding-bottom: var(--safe-bottom); }
 
-    /* ── App Shell ── */
-    #app {
-      display: flex;
-      flex-direction: column;
-      height: 100dvh;
-      padding-top: var(--safe-top);
-      padding-bottom: var(--safe-bottom);
-    }
-
-    /* ── Header ── */
-    #header {
-      background: var(--bg);
-      border-bottom: 1px solid var(--border);
-      padding: 8px 12px;
-      flex-shrink: 0;
-    }
-
-    #toolbar {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-bottom: 8px;
-    }
-
+    /* Header */
+    #header { background: var(--bg); border-bottom: 1px solid var(--border); padding: 8px 12px; flex-shrink: 0; }
+    #toolbar { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
     .icon-btn {
-      background: none;
-      border: 1px solid var(--border);
-      color: var(--text);
-      font-family: var(--font);
-      font-size: 16px;
-      width: 36px;
-      height: 36px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      flex-shrink: 0;
-      transition: border-color 0.15s, color 0.15s;
+      background: none; border: 1px solid var(--border); color: var(--text);
+      font-family: var(--font); font-size: 16px; width: 36px; height: 36px;
+      border-radius: 8px; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; flex-shrink: 0; transition: border-color 0.15s, color 0.15s;
     }
     .icon-btn:active { background: var(--surface); }
     .icon-btn:disabled { opacity: 0.3; }
     .icon-btn.active { border-color: var(--accent); color: var(--accent); }
-
-    #title-bar {
-      flex: 1;
-      text-align: center;
-      font-size: 12px;
-      color: var(--muted);
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      padding: 0 4px;
-    }
-
-    /* ── Address Bar ── */
-    #address-row {
-      display: flex;
-      gap: 6px;
-      align-items: center;
-    }
-
+    #title-bar { flex: 1; text-align: center; font-size: 12px; color: var(--muted); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; padding: 0 4px; }
+    #address-row { display: flex; gap: 6px; align-items: center; }
     #address-input {
-      flex: 1;
-      background: var(--surface); border-top: 1px solid var(--border);
-      border: 1px solid var(--border);
-      color: var(--text);
-      font-family: var(--font);
-      font-size: 13px;
-      padding: 8px 10px;
-      border-radius: 8px;
-      outline: none;
-      transition: border-color 0.15s;
+      flex: 1; background: var(--surface); border: 1px solid var(--border); color: var(--text);
+      font-family: var(--font); font-size: 13px; padding: 8px 10px; border-radius: 8px; outline: none; transition: border-color 0.15s;
     }
     #address-input:focus { border-color: var(--accent); }
     #address-input::placeholder { color: var(--muted); }
-
-    #go-btn {
-      background: var(--accent);
-      color: #000;
-      border: none;
-      font-family: var(--font);
-      font-size: 13px;
-      font-weight: 600;
-      padding: 8px 14px;
-      border-radius: 8px;
-      cursor: pointer;
-      flex-shrink: 0;
-    }
+    #go-btn { background: var(--accent); color: #fff; border: none; font-family: var(--font); font-size: 13px; font-weight: 600; padding: 8px 14px; border-radius: 8px; cursor: pointer; flex-shrink: 0; }
     #go-btn:active { opacity: 0.8; }
 
-    /* ── Content ── */
-    #content {
-      flex: 1;
-      overflow-y: auto;
-      overflow-x: hidden;
-      -webkit-overflow-scrolling: touch;
-      overscroll-behavior: contain;
+    /* Veronica search bar */
+    #veronica-bar { display: flex; gap: 6px; align-items: center; margin-top: 8px; }
+    #veronica-input {
+      flex: 1; background: var(--surface); border: 1px solid var(--border); color: var(--text);
+      font-family: var(--font); font-size: 13px; padding: 7px 10px; border-radius: 8px; outline: none; transition: border-color 0.15s;
     }
+    #veronica-input:focus { border-color: var(--search-color); }
+    #veronica-input::placeholder { color: var(--muted); }
+    #veronica-btn { background: var(--search-color); color: #fff; border: none; font-family: var(--font); font-size: 12px; font-weight: 600; padding: 7px 12px; border-radius: 8px; cursor: pointer; flex-shrink: 0; white-space: nowrap; }
+    #veronica-btn:active { opacity: 0.8; }
 
-    /* ── Loading ── */
-    #loading {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-      gap: 16px;
-    }
+    /* Content */
+    #content { flex: 1; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+
+    /* Loading */
+    #loading { display: none; flex-direction: column; align-items: center; justify-content: center; height: 100%; gap: 16px; }
     #loading.visible { display: flex; }
-
-    .spinner {
-      width: 32px;
-      height: 32px;
-      border: 2px solid var(--border);
-      border-top-color: var(--text);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
+    .spinner { width: 32px; height: 32px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
-
-    #loading p {
-      font-size: 12px;
-      color: var(--muted);
-      animation: pulse 1.5s ease-in-out infinite;
-    }
+    #loading p { font-size: 12px; color: var(--muted); animation: pulse 1.5s ease-in-out infinite; }
     @keyframes pulse { 0%,100%{opacity:0.4} 50%{opacity:1} }
 
-    /* ── Menu ── */
+    /* Home view */
+    #home-view { display: none; padding: 20px 16px; }
+    #home-view.visible { display: block; }
+    .home-section { margin-bottom: 24px; }
+    .home-section h2 { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+    .home-server {
+      display: flex; align-items: center; gap: 10px; padding: 10px 12px;
+      background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+      margin-bottom: 8px; cursor: pointer; transition: border-color 0.15s;
+    }
+    .home-server:active { border-color: var(--accent); }
+    .home-server-icon { font-size: 18px; flex-shrink: 0; }
+    .home-server-body { flex: 1; min-width: 0; }
+    .home-server-name { font-size: 14px; font-weight: 500; }
+    .home-server-host { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .home-server-arrow { color: var(--muted); font-size: 14px; }
+
+    /* Menu view */
     #menu-view { display: none; }
     #menu-view.visible { display: block; }
-
-    .gopher-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      padding: 10px 14px;
-      border-bottom: 1px solid var(--border);
-      cursor: default;
-      transition: background 0.1s;
-    }
+    .gopher-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 14px; border-bottom: 1px solid var(--border); cursor: default; transition: background 0.1s; }
     .gopher-item.navigable { cursor: pointer; }
     .gopher-item.navigable:active { background: var(--surface); }
-
-    .item-icon {
-      font-size: 14px;
-      flex-shrink: 0;
-      margin-top: 1px;
-      width: 18px;
-      text-align: center;
-    }
-
+    .item-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; width: 18px; text-align: center; }
     .item-body { flex: 1; min-width: 0; }
-
-    .item-text {
-      font-size: 14px;
-      line-height: 1.4;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .item-meta {
-      font-size: 11px;
-      color: var(--muted);
-      margin-top: 2px;
-    }
-
-    .item-arrow {
-      font-size: 12px;
-      color: var(--muted);
-      flex-shrink: 0;
-      margin-top: 2px;
-    }
-
-    /* Item type colors */
-    .type-dir  .item-text { color: var(--dir-color); }
-    .type-text .item-text { color: var(--txt-color); }
+    .item-text { font-size: 14px; line-height: 1.4; overflow: hidden; text-overflow: ellipsis; }
+    .item-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .item-arrow { font-size: 12px; color: var(--muted); flex-shrink: 0; margin-top: 2px; }
+    .type-dir    .item-text { color: var(--dir-color); }
+    .type-text   .item-text { color: var(--txt-color); }
     .type-search .item-text { color: var(--search-color); }
-    .type-image .item-text { color: var(--img-color); }
-    .type-info .item-text { color: var(--info-color); font-size: 12px; }
-    .type-error .item-text { color: var(--danger); }
-    .type-html .item-text { color: #44ff88; }
+    .type-image  .item-text { color: var(--img-color); }
+    .type-info   .item-text { color: var(--info-color); font-size: 12px; }
+    .type-error  .item-text { color: var(--danger); }
+    .type-html   .item-text { color: #2a8a4a; }
 
-    /* ── Text View ── */
-    #text-view {
-      display: none;
-      padding: 16px;
-    }
+    /* Text view */
+    #text-view { display: none; padding: 16px; }
     #text-view.visible { display: block; }
+    #text-content { font-size: 13px; line-height: 1.6; white-space: pre-wrap; word-break: break-word; color: var(--text); }
 
-    #text-content {
-      font-size: 13px;
-      line-height: 1.6;
-      white-space: pre-wrap;
-      word-break: break-word;
-      color: var(--text);
-    }
-
-    /* ── Error View ── */
-    #error-view {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-      gap: 12px;
-      padding: 32px;
-      text-align: center;
-    }
+    /* Error view */
+    #error-view { display: none; flex-direction: column; align-items: center; justify-content: center; height: 100%; gap: 12px; padding: 32px; text-align: center; }
     #error-view.visible { display: flex; }
     #error-icon { font-size: 48px; }
     #error-title { font-size: 16px; font-weight: 600; color: var(--danger); }
     #error-msg { font-size: 12px; color: var(--muted); line-height: 1.5; }
-    #retry-btn {
-      margin-top: 8px;
-      background: none;
-      border: 1px solid var(--accent);
-      color: var(--text);
-      font-family: var(--font);
-      font-size: 13px;
-      padding: 8px 20px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
+    #retry-btn { margin-top: 8px; background: none; border: 1px solid var(--accent); color: var(--text); font-family: var(--font); font-size: 13px; padding: 8px 20px; border-radius: 8px; cursor: pointer; }
 
-    /* ── Bookmarks Sheet ── */
-    #bm-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.7);
-      z-index: 100;
-      align-items: flex-end;
-    }
+    /* Bookmarks sheet */
+    #bm-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; align-items: flex-end; }
     #bm-overlay.visible { display: flex; }
-
-    #bm-sheet {
-      background: var(--surface); border-top: 1px solid var(--border);
-      border-radius: 16px 16px 0 0;
-      width: 100%;
-      max-height: 70dvh;
-      display: flex;
-      flex-direction: column;
-      padding-bottom: var(--safe-bottom);
-    }
-
-    #bm-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 16px 16px 12px;
-      border-bottom: 1px solid var(--border);
-    }
+    #bm-sheet { background: var(--surface); border-top: 1px solid var(--border); border-radius: 16px 16px 0 0; width: 100%; max-height: 70dvh; display: flex; flex-direction: column; padding-bottom: var(--safe-bottom); }
+    #bm-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 16px 12px; border-bottom: 1px solid var(--border); }
     #bm-header h2 { font-size: 15px; font-weight: 600; }
-    #bm-close {
-      background: none;
-      border: none;
-      color: var(--muted);
-      font-size: 20px;
-      cursor: pointer;
-      font-family: var(--font);
-    }
-
+    #bm-close { background: none; border: none; color: var(--muted); font-size: 20px; cursor: pointer; font-family: var(--font); }
     #bm-list { overflow-y: auto; flex: 1; }
-
-    .bm-item {
-      display: flex;
-      align-items: center;
-      padding: 12px 16px;
-      border-bottom: 1px solid var(--border);
-      gap: 10px;
-      cursor: pointer;
-    }
+    .bm-item { display: flex; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--border); gap: 10px; cursor: pointer; }
     .bm-item:active { background: var(--bg); }
-    .bm-url {
-      flex: 1;
-      font-size: 13px;
-      color: var(--accent2);
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-    .bm-delete {
-      background: none;
-      border: none;
-      color: var(--danger);
-      font-size: 18px;
-      cursor: pointer;
-      padding: 4px;
-      font-family: var(--font);
-    }
+    .bm-url { flex: 1; font-size: 13px; color: var(--accent2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .bm-delete { background: none; border: none; color: var(--danger); font-size: 18px; cursor: pointer; padding: 4px; font-family: var(--font); }
+    #bm-empty { padding: 40px; text-align: center; color: var(--muted); font-size: 13px; line-height: 1.8; }
 
-    #bm-empty {
-      padding: 40px;
-      text-align: center;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.8;
-    }
-
-    /* ── Search Dialog ── */
-    #search-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.8);
-      z-index: 200;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-    }
+    /* Search dialog */
+    #search-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200; align-items: center; justify-content: center; padding: 24px; }
     #search-overlay.visible { display: flex; }
-    #search-box {
-      background: var(--surface); border-top: 1px solid var(--border);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 20px;
-      width: 100%;
-      max-width: 340px;
-    }
+    #search-box { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; width: 100%; max-width: 340px; }
     #search-box h3 { font-size: 14px; margin-bottom: 12px; color: var(--search-color); }
-    #search-input {
-      width: 100%;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      color: var(--text);
-      font-family: var(--font);
-      font-size: 14px;
-      padding: 10px;
-      border-radius: 8px;
-      outline: none;
-      margin-bottom: 12px;
-    }
+    #search-server-label { font-size: 11px; color: var(--muted); margin-bottom: 10px; }
+    #search-input { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--text); font-family: var(--font); font-size: 14px; padding: 10px; border-radius: 8px; outline: none; margin-bottom: 12px; }
     #search-input:focus { border-color: var(--search-color); }
     .search-btns { display: flex; gap: 8px; justify-content: flex-end; }
-    .search-btns button {
-      font-family: var(--font);
-      font-size: 13px;
-      padding: 8px 16px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
+    .search-btns button { font-family: var(--font); font-size: 13px; padding: 8px 16px; border-radius: 8px; cursor: pointer; }
     #search-cancel { background: none; border: 1px solid var(--border); color: var(--muted); }
-    #search-go { background: var(--search-color); border: none; color: #000; font-weight: 600; }
+    #search-go { background: var(--search-color); border: none; color: #fff; font-weight: 600; }
 
-    /* ── Proxy Notice ── */
-    #proxy-notice {
-      background: #fff8e6;
-      border-bottom: 1px solid #f0d080;
-      padding: 8px 14px;
-      font-size: 11px;
-      color: #ffaa00;
-      text-align: center;
-      line-height: 1.4;
-    }
-    #proxy-notice a { color: #ffcc44; }
-    #proxy-notice.hidden { display: none; }
-
-    /* ── Font size controls (text view) ── */
-    #text-controls {
-      display: none;
-      position: fixed;
-      bottom: calc(16px + var(--safe-bottom));
-      right: 16px;
-      flex-direction: column;
-      gap: 4px;
-      z-index: 50;
-    }
+    /* Font controls */
+    #text-controls { display: none; position: fixed; bottom: calc(16px + var(--safe-bottom)); right: 16px; flex-direction: column; gap: 4px; z-index: 50; }
     #text-controls.visible { display: flex; }
-    .size-btn {
-      background: var(--surface); border-top: 1px solid var(--border);
-      border: 1px solid var(--border);
-      color: var(--text);
-      font-family: var(--font);
-      font-size: 16px;
-      width: 36px;
-      height: 36px;
-      border-radius: 8px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+    .size-btn { background: var(--surface); border: 1px solid var(--border); color: var(--text); font-family: var(--font); font-size: 16px; width: 36px; height: 36px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
-    /* ── Scan-line overlay (aesthetic) ── */
-    body::after {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background: repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 2px,
-        rgba(0,0,0,0.015) 2px,
-        rgba(0,0,0,0.015) 4px
-      );
-      pointer-events: none;
-      z-index: 9999;
-    }
+    body::after { content: ''; position: fixed; inset: 0; background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.012) 2px, rgba(0,0,0,0.012) 4px); pointer-events: none; z-index: 9999; }
   </style>
 </head>
 <body>
 <div id="app">
   <div id="header">
     <div id="toolbar">
-      <button class="icon-btn" id="back-btn" disabled title="Back">←</button>
-      <button class="icon-btn" id="reload-btn" title="Reload">↺</button>
+      <button class="icon-btn" id="back-btn"    disabled title="Back">←</button>
+      <button class="icon-btn" id="forward-btn" disabled title="Forward">→</button>
+      <button class="icon-btn" id="home-btn"    title="Home">⌂</button>
+      <button class="icon-btn" id="reload-btn"  title="Reload">↺</button>
       <div id="title-bar">Gopherspace</div>
-      <button class="icon-btn" id="star-btn" title="Bookmark">☆</button>
-      <button class="icon-btn" id="bm-btn" title="Bookmarks">≡</button>
+      <button class="icon-btn" id="star-btn"    title="Bookmark">☆</button>
+      <button class="icon-btn" id="bm-btn"      title="Bookmarks">≡</button>
     </div>
     <div id="address-row">
       <input id="address-input" type="text" placeholder="gopher://host:port/selector"
              autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
       <button id="go-btn">GO</button>
     </div>
-  </div>
-
-  <div id="proxy-notice">
-    ⚠ No proxy configured — running in demo mode.
-    <a href="#" id="proxy-help-link">How to set up proxy →</a>
+    <div id="veronica-bar">
+      <input id="veronica-input" type="text" placeholder="🔍 Search Gopherspace (Veronica-2)…"
+             autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+      <button id="veronica-btn">Search</button>
+    </div>
   </div>
 
   <div id="content">
@@ -471,6 +194,7 @@
       <p>Fetching from Gopherspace…</p>
     </div>
 
+    <div id="home-view"></div>
     <div id="menu-view"></div>
 
     <div id="text-view">
@@ -486,13 +210,11 @@
   </div>
 </div>
 
-<!-- Text size controls -->
 <div id="text-controls">
   <button class="size-btn" id="font-up">+</button>
   <button class="size-btn" id="font-dn">−</button>
 </div>
 
-<!-- Bookmarks Sheet -->
 <div id="bm-overlay">
   <div id="bm-sheet">
     <div id="bm-header">
@@ -503,10 +225,10 @@
   </div>
 </div>
 
-<!-- Search Dialog -->
 <div id="search-overlay">
   <div id="search-box">
-    <h3>Search</h3>
+    <h3>🔍 Gopher Search</h3>
+    <div id="search-server-label"></div>
     <input id="search-input" type="text" placeholder="Search query…">
     <div class="search-btns">
       <button id="search-cancel">Cancel</button>
@@ -516,203 +238,231 @@
 </div>
 
 <script>
-// ─────────────────────────────────────────────
-// CONFIG — set PROXY_URL to your deployed proxy
-// ─────────────────────────────────────────────
 const PROXY_URL = 'https://gopher-7oxz.onrender.com';
 
-// ─── State ───────────────────────────────────
-let history = [];
-let current = { host: 'gopher.floodgap.com', port: 70, selector: '', title: 'Floodgap' };
-let bookmarks = JSON.parse(localStorage.getItem('gopher_bookmarks') || '[]');
-let fontSize = parseInt(localStorage.getItem('gopher_fontsize') || '13');
-let pendingSearch = null;
+// ── State ──
+let backHistory    = [];
+let forwardHistory = [];
+let current        = null; // set after showHome()
+let bookmarks      = JSON.parse(localStorage.getItem('gopher_bookmarks') || '[]');
+let fontSize       = parseInt(localStorage.getItem('gopher_fontsize') || '13');
+let pendingSearch  = null;
+let onHomePage     = true;
 
-// ─── DOM refs ────────────────────────────────
+// ── DOM ──
 const $ = id => document.getElementById(id);
 const addressInput = $('address-input');
 const menuView     = $('menu-view');
+const homeView     = $('home-view');
 const textView     = $('text-view');
 const textContent  = $('text-content');
 const errorView    = $('error-view');
 const loading      = $('loading');
 const backBtn      = $('back-btn');
+const forwardBtn   = $('forward-btn');
 const starBtn      = $('star-btn');
-const proxyNotice  = $('proxy-notice');
 
-// ─── Gopher Item Types ────────────────────────
+// ── Item types ──
 const TYPES = {
-  '0': { label: 'TXT', icon: '📄', color: 'type-text',   navigable: true  },
-  '1': { label: 'DIR', icon: '📁', color: 'type-dir',    navigable: true  },
-  '7': { label: 'SRC', icon: '🔍', color: 'type-search', navigable: true  },
-  'h': { label: 'HTM', icon: '🌐', color: 'type-html',   navigable: true  },
-  'i': { label: '',    icon: '',   color: 'type-info',   navigable: false },
-  'g': { label: 'GIF', icon: '🖼', color: 'type-image',  navigable: false },
-  'I': { label: 'IMG', icon: '🖼', color: 'type-image',  navigable: false },
-  '9': { label: 'BIN', icon: '⬇', color: 'type-bin',    navigable: false },
-  's': { label: 'SND', icon: '🎵', color: 'type-sound',  navigable: false },
-  '3': { label: 'ERR', icon: '⚠', color: 'type-error',  navigable: false },
+  '0': { icon: '📄', color: 'type-text',   navigable: true  },
+  '1': { icon: '📁', color: 'type-dir',    navigable: true  },
+  '7': { icon: '🔍', color: 'type-search', navigable: true  },
+  'h': { icon: '🌐', color: 'type-html',   navigable: true  },
+  'i': { icon: '',   color: 'type-info',   navigable: false },
+  'g': { icon: '🖼', color: 'type-image',  navigable: false },
+  'I': { icon: '🖼', color: 'type-image',  navigable: false },
+  '9': { icon: '⬇', color: 'type-bin',    navigable: false },
+  's': { icon: '🎵', color: 'type-sound',  navigable: false },
+  '3': { icon: '⚠', color: 'type-error',  navigable: false },
 };
-const typeInfo = t => TYPES[t] || { label: '???', icon: '❓', color: '', navigable: false };
+const typeInfo = t => TYPES[t] || { icon: '❓', color: '', navigable: false };
 
-// ─── URL helpers ─────────────────────────────
+// ── Popular Gopher servers for home page ──
+const HOME_SERVERS = [
+  { icon: '🌍', name: 'Floodgap Systems',    host: 'gopher.floodgap.com',   port: 70, selector: '', desc: 'The hub of Gopherspace' },
+  { icon: '📚', name: 'Project Gutenberg',   host: 'gutenberg.net',          port: 70, selector: '', desc: 'Free classic literature' },
+  { icon: '📰', name: 'Hacker News (Gopher)',host: 'hngopher.com',           port: 70, selector: '', desc: 'Tech news in Gopher form' },
+  { icon: '🗃', name: 'Quux.org',            host: 'gopher.quux.org',        port: 70, selector: '', desc: 'Classic Gopher archive' },
+  { icon: '🖥', name: 'The Old Net',         host: 'gopher.theoldnet.com',   port: 70, selector: '', desc: 'Retro internet archive' },
+  { icon: '🐧', name: 'SDF Public Access',   host: 'sdf.org',                port: 70, selector: '', desc: 'Public Unix system' },
+];
+
+// ── URL helpers ──
 function parseURL(s) {
   s = s.trim();
   if (!s) return null;
   if (!s.startsWith('gopher://')) s = 'gopher://' + s;
   try {
     const u = new URL(s);
-    const host = u.hostname;
-    const port = parseInt(u.port) || 70;
     let sel = u.pathname;
-    // strip item type byte if present
-    if (sel.length >= 2 && '01234567ghIisT+'.includes(sel[1])) {
-      sel = '/' + sel.slice(2);
-    }
-    return { host, port, selector: sel };
+    if (sel.length >= 2 && '01234567ghIisT+'.includes(sel[1])) sel = '/' + sel.slice(2);
+    return { host: u.hostname, port: parseInt(u.port) || 70, selector: sel };
   } catch {
-    // manual parse
     s = s.replace('gopher://', '');
-    const slashIdx = s.indexOf('/');
-    const hostPart = slashIdx === -1 ? s : s.slice(0, slashIdx);
-    let sel = slashIdx === -1 ? '' : s.slice(slashIdx);
-    const [host, portStr] = hostPart.split(':');
+    const si = s.indexOf('/');
+    const hp = si === -1 ? s : s.slice(0, si);
+    const sel = si === -1 ? '' : s.slice(si);
+    const [host, portStr] = hp.split(':');
     return { host, port: parseInt(portStr) || 70, selector: sel };
   }
 }
 
 function currentURL() {
+  if (!current) return '';
   return `gopher://${current.host}:${current.port}${current.selector || '/'}`;
 }
 
-// ─── Fetch via proxy ─────────────────────────
+// ── Fetch ──
 async function gopherFetch(host, port, selector) {
-  if (!PROXY_URL) {
-    // Demo mode: return fake menu
-    return demoMenu(host, selector);
-  }
   const params = new URLSearchParams({ host, port, selector });
   const resp = await fetch(`${PROXY_URL}/gopher?${params}`);
   if (!resp.ok) throw new Error(`Proxy error: ${resp.status}`);
-  const json = await resp.json();
-  return json; // { type: 'menu'|'text', content: ... }
+  return resp.json();
 }
 
-// ─── Demo Mode ───────────────────────────────
-function demoMenu(host, selector) {
-  return {
-    type: 'menu',
-    items: [
-      { type: 'i', text: `Welcome to ${host}`, selector: '', host: '', port: 70 },
-      { type: 'i', text: '(Running in demo mode — set PROXY_URL to browse real servers)', selector: '', host: '', port: 70 },
-      { type: 'i', text: '', selector: '', host: '', port: 70 },
-      { type: '1', text: 'About Gopher', selector: '/about', host, port: 70 },
-      { type: '0', text: 'Sample Text File', selector: '/sample.txt', host, port: 70 },
-      { type: '7', text: 'Search Veronica-2', selector: '/v2/vs', host: 'gopher.floodgap.com', port: 70 },
-      { type: 'i', text: '', selector: '', host: '', port: 70 },
-      { type: 'i', text: '── Popular Gopher Servers ──', selector: '', host: '', port: 70 },
-      { type: '1', text: 'Floodgap Systems', selector: '/', host: 'gopher.floodgap.com', port: 70 },
-      { type: '1', text: 'Quux.org', selector: '/', host: 'gopher.quux.org', port: 70 },
-      { type: '1', text: 'The Gopher Project', selector: '/', host: 'gopher.theoldnet.com', port: 70 },
-    ]
-  };
-}
-
-// ─── Navigation ──────────────────────────────
+// ── Navigation ──
 async function navigate(host, port, selector, title) {
-  history.push({ ...current });
+  if (current) backHistory.push({ ...current, onHomePage });
+  forwardHistory = [];
   current = { host, port, selector, title: title || `${host}${selector}` };
+  onHomePage = false;
+  updateNavBtns();
   await load();
 }
 
 async function goBack() {
-  if (!history.length) return;
-  current = history.pop();
+  if (!backHistory.length) return;
+  if (current) forwardHistory.push({ ...current, onHomePage });
+  const prev = backHistory.pop();
+  onHomePage = prev.onHomePage || false;
+  current = prev;
+  updateNavBtns();
+  if (onHomePage) { showHome(); return; }
+  await load();
+}
+
+async function goForward() {
+  if (!forwardHistory.length) return;
+  if (current) backHistory.push({ ...current, onHomePage });
+  const next = forwardHistory.pop();
+  onHomePage = next.onHomePage || false;
+  current = next;
+  updateNavBtns();
+  if (onHomePage) { showHome(); return; }
   await load();
 }
 
 async function load() {
   showLoading();
   updateAddress();
-  updateBackBtn();
   updateStar();
-
   try {
     const result = await gopherFetch(current.host, current.port, current.selector);
-    if (result.type === 'menu') {
-      renderMenu(result.items);
-    } else if (result.type === 'text') {
-      renderText(result.content);
-    } else {
-      showError('Unknown response type');
-    }
+    if (result.type === 'menu') renderMenu(result.items);
+    else if (result.type === 'text') renderText(result.content);
+    else showError('Unknown response type');
   } catch (e) {
     showError(e.message || 'Failed to connect');
   }
 }
 
-// ─── Render Menu ─────────────────────────────
+// ── Home page ──
+function showHome() {
+  onHomePage = true;
+  current = null;
+  addressInput.value = '';
+  $('title-bar').textContent = 'Gopherspace';
+  updateNavBtns();
+  updateStar();
+
+  homeView.innerHTML = `
+    <div class="home-section">
+      <h2>Popular Servers</h2>
+      ${HOME_SERVERS.map((s, i) => `
+        <div class="home-server" data-idx="${i}">
+          <div class="home-server-icon">${s.icon}</div>
+          <div class="home-server-body">
+            <div class="home-server-name">${esc(s.name)}</div>
+            <div class="home-server-host">${esc(s.host)}</div>
+          </div>
+          <div class="home-server-arrow">›</div>
+        </div>`).join('')}
+    </div>
+    ${bookmarks.length ? `
+    <div class="home-section">
+      <h2>Bookmarks</h2>
+      ${bookmarks.map((url, i) => `
+        <div class="home-server" data-bm="${i}">
+          <div class="home-server-icon">★</div>
+          <div class="home-server-body">
+            <div class="home-server-name" style="color:var(--accent2)">${esc(url)}</div>
+          </div>
+          <div class="home-server-arrow">›</div>
+        </div>`).join('')}
+    </div>` : ''}
+  `;
+
+  homeView.querySelectorAll('.home-server[data-idx]').forEach(el => {
+    el.addEventListener('click', () => {
+      const s = HOME_SERVERS[parseInt(el.dataset.idx)];
+      navigate(s.host, s.port, s.selector, s.name);
+    });
+  });
+  homeView.querySelectorAll('.home-server[data-bm]').forEach(el => {
+    el.addEventListener('click', () => {
+      const url = bookmarks[parseInt(el.dataset.bm)];
+      const parsed = parseURL(url);
+      if (parsed) navigate(parsed.host, parsed.port, parsed.selector, url);
+    });
+  });
+
+  showView('home');
+}
+
+// ── Render menu ──
 function renderMenu(items) {
-  const html = items.map(item => {
+  menuView.innerHTML = items.map(item => {
     const info = typeInfo(item.type);
-    const nav = info.navigable;
     const isInfo = item.type === 'i';
-
-    if (isInfo && !item.text.trim()) {
-      return `<div class="gopher-item type-info" style="padding:4px 14px;border:none;">
-                <div class="item-text"> </div></div>`;
-    }
-
-    return `<div class="gopher-item ${info.color} ${nav ? 'navigable' : ''}"
-                 data-type="${esc(item.type)}"
-                 data-host="${esc(item.host)}"
-                 data-port="${item.port}"
-                 data-sel="${esc(item.selector)}"
-                 data-text="${esc(item.text)}">
+    if (isInfo && !item.text.trim()) return `<div class="gopher-item type-info" style="padding:3px 14px;border:none;"><div class="item-text"> </div></div>`;
+    return `<div class="gopher-item ${info.color} ${info.navigable ? 'navigable' : ''}"
+                 data-type="${esc(item.type)}" data-host="${esc(item.host)}" data-port="${item.port}"
+                 data-sel="${esc(item.selector)}" data-text="${esc(item.text)}">
               ${isInfo ? '' : `<div class="item-icon">${info.icon}</div>`}
               <div class="item-body">
                 <div class="item-text">${esc(item.text)}</div>
                 ${(!isInfo && item.host) ? `<div class="item-meta">${esc(item.host)}:${item.port}</div>` : ''}
               </div>
-              ${nav ? '<div class="item-arrow">›</div>' : ''}
+              ${info.navigable ? '<div class="item-arrow">›</div>' : ''}
             </div>`;
   }).join('');
 
-  menuView.innerHTML = html;
   showView('menu');
-
   menuView.querySelectorAll('.navigable').forEach(el => {
     el.addEventListener('click', () => {
-      const type = el.dataset.type;
-      const host = el.dataset.host;
-      const port = parseInt(el.dataset.port);
-      const sel  = el.dataset.sel;
-      const text = el.dataset.text;
-
-      if (type === '7') {
-        openSearch(host, port, sel, text);
-      } else {
-        navigate(host, port, sel, text);
-      }
+      const { type, host, port, sel: selector, text } = el.dataset;
+      if (type === '7') openSearch(host, parseInt(port), selector, text);
+      else navigate(host, parseInt(port), selector, text);
     });
   });
 }
 
-// ─── Render Text ─────────────────────────────
+// ── Render text ──
 function renderText(text) {
   textContent.textContent = text;
   textContent.style.fontSize = fontSize + 'px';
   showView('text');
 }
 
-// ─── View Management ─────────────────────────
+// ── Views ──
 function showView(which) {
   loading.classList.remove('visible');
+  homeView.classList.remove('visible');
   menuView.classList.remove('visible');
   textView.classList.remove('visible');
   errorView.classList.remove('visible');
   $('text-controls').classList.remove('visible');
-
+  if (which === 'home')  homeView.classList.add('visible');
   if (which === 'menu')  menuView.classList.add('visible');
   if (which === 'text')  { textView.classList.add('visible'); $('text-controls').classList.add('visible'); }
   if (which === 'error') errorView.classList.add('visible');
@@ -721,70 +471,58 @@ function showView(which) {
 
 function showLoading() {
   loading.classList.add('visible');
+  homeView.classList.remove('visible');
   menuView.classList.remove('visible');
   textView.classList.remove('visible');
   errorView.classList.remove('visible');
   $('text-controls').classList.remove('visible');
 }
 
-function showError(msg) {
-  $('error-msg').textContent = msg;
-  showView('error');
-}
+function showError(msg) { $('error-msg').textContent = msg; showView('error'); }
 
-// ─── UI Updates ──────────────────────────────
+// ── UI ──
 function updateAddress() {
-  addressInput.value = currentURL();
+  addressInput.value = current ? currentURL() : '';
+  $('title-bar').textContent = current ? (current.title || currentURL()) : 'Gopherspace';
 }
 
-function updateBackBtn() {
-  backBtn.disabled = history.length === 0;
+function updateNavBtns() {
+  backBtn.disabled    = backHistory.length === 0;
+  forwardBtn.disabled = forwardHistory.length === 0;
 }
 
 function updateStar() {
+  if (!current) { starBtn.textContent = '☆'; starBtn.classList.remove('active'); return; }
   const url = currentURL();
-  starBtn.textContent = bookmarks.includes(url) ? '★' : '☆';
-  starBtn.classList.toggle('active', bookmarks.includes(url));
+  const has = bookmarks.includes(url);
+  starBtn.textContent = has ? '★' : '☆';
+  starBtn.classList.toggle('active', has);
 }
 
 function esc(s) {
-  return String(s || '')
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;');
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-// ─── Bookmarks ───────────────────────────────
+// ── Bookmarks ──
 function toggleBookmark() {
+  if (!current) return;
   const url = currentURL();
   const idx = bookmarks.indexOf(url);
-  if (idx === -1) bookmarks.push(url);
-  else bookmarks.splice(idx, 1);
+  if (idx === -1) bookmarks.push(url); else bookmarks.splice(idx, 1);
   localStorage.setItem('gopher_bookmarks', JSON.stringify(bookmarks));
   updateStar();
 }
 
 function renderBookmarks() {
   const list = $('bm-list');
-  if (!bookmarks.length) {
-    list.innerHTML = `<div id="bm-empty">No bookmarks yet.<br>Tap ☆ while browsing to save a location.</div>`;
-    return;
-  }
+  if (!bookmarks.length) { list.innerHTML = `<div id="bm-empty">No bookmarks yet.<br>Tap ☆ while browsing to save a location.</div>`; return; }
   list.innerHTML = bookmarks.map((url, i) =>
-    `<div class="bm-item">
-       <div class="bm-url" data-url="${esc(url)}">${esc(url)}</div>
-       <button class="bm-delete" data-idx="${i}">✕</button>
-     </div>`
+    `<div class="bm-item"><div class="bm-url" data-url="${esc(url)}">${esc(url)}</div><button class="bm-delete" data-idx="${i}">✕</button></div>`
   ).join('');
-
   list.querySelectorAll('.bm-url').forEach(el => {
     el.addEventListener('click', () => {
-      const parsed = parseURL(el.dataset.url);
-      if (parsed) {
-        closeBM();
-        navigate(parsed.host, parsed.port, parsed.selector, el.dataset.url);
-      }
+      const p = parseURL(el.dataset.url);
+      if (p) { closeBM(); navigate(p.host, p.port, p.selector, el.dataset.url); }
     });
   });
   list.querySelectorAll('.bm-delete').forEach(el => {
@@ -801,9 +539,10 @@ function renderBookmarks() {
 function openBM()  { renderBookmarks(); $('bm-overlay').classList.add('visible'); }
 function closeBM() { $('bm-overlay').classList.remove('visible'); }
 
-// ─── Search ──────────────────────────────────
+// ── Gopher search dialog (type 7) ──
 function openSearch(host, port, selector, title) {
   pendingSearch = { host, port, selector, title };
+  $('search-server-label').textContent = `Server: ${host}`;
   $('search-input').value = '';
   $('search-overlay').classList.add('visible');
   setTimeout(() => $('search-input').focus(), 100);
@@ -817,56 +556,48 @@ function doSearch() {
   navigate(host, port, selector + '\t' + query, title + ': ' + query);
 }
 
-// ─── Proxy notice ────────────────────────────
-if (PROXY_URL) proxyNotice.classList.add('hidden');
+// ── Veronica-2 search ──
+function doVeronicaSearch() {
+  const query = $('veronica-input').value.trim();
+  if (!query) return;
+  navigate('gopher.floodgap.com', 70, '/v2/vs\t' + query, 'Veronica: ' + query);
+  $('veronica-input').value = '';
+}
 
-$('proxy-help-link').addEventListener('click', e => {
-  e.preventDefault();
-  alert(
-    'To browse real Gopher servers, deploy the included proxy:\n\n' +
-    '1. Upload proxy/server.js to a Node.js host\n' +
-    '   (Render.com, Railway.app — both free tier)\n\n' +
-    '2. Set PROXY_URL in index.html to your deployment URL\n\n' +
-    '3. Reload this page'
-  );
-});
-
-// ─── Event Listeners ─────────────────────────
+// ── Event listeners ──
 backBtn.addEventListener('click', goBack);
-$('reload-btn').addEventListener('click', load);
+forwardBtn.addEventListener('click', goForward);
+$('reload-btn').addEventListener('click', () => { if (!onHomePage && current) load(); });
+$('home-btn').addEventListener('click', () => {
+  if (current) backHistory.push({ ...current, onHomePage: false });
+  forwardHistory = [];
+  showHome();
+});
 starBtn.addEventListener('click', toggleBookmark);
 $('bm-btn').addEventListener('click', openBM);
 $('bm-close').addEventListener('click', closeBM);
 $('bm-overlay').addEventListener('click', e => { if (e.target === $('bm-overlay')) closeBM(); });
 
 $('go-btn').addEventListener('click', () => {
-  const parsed = parseURL(addressInput.value);
-  if (parsed) navigate(parsed.host, parsed.port, parsed.selector, addressInput.value);
+  const p = parseURL(addressInput.value);
+  if (p) navigate(p.host, p.port, p.selector, addressInput.value);
 });
-
-addressInput.addEventListener('keydown', e => {
-  if (e.key === 'Enter') $('go-btn').click();
-});
+addressInput.addEventListener('keydown', e => { if (e.key === 'Enter') $('go-btn').click(); });
 
 $('retry-btn').addEventListener('click', load);
 
-$('font-up').addEventListener('click', () => {
-  fontSize = Math.min(24, fontSize + 1);
-  textContent.style.fontSize = fontSize + 'px';
-  localStorage.setItem('gopher_fontsize', fontSize);
-});
-$('font-dn').addEventListener('click', () => {
-  fontSize = Math.max(9, fontSize - 1);
-  textContent.style.fontSize = fontSize + 'px';
-  localStorage.setItem('gopher_fontsize', fontSize);
-});
+$('font-up').addEventListener('click', () => { fontSize = Math.min(24, fontSize+1); textContent.style.fontSize = fontSize+'px'; localStorage.setItem('gopher_fontsize', fontSize); });
+$('font-dn').addEventListener('click', () => { fontSize = Math.max(9,  fontSize-1); textContent.style.fontSize = fontSize+'px'; localStorage.setItem('gopher_fontsize', fontSize); });
 
 $('search-cancel').addEventListener('click', () => $('search-overlay').classList.remove('visible'));
 $('search-go').addEventListener('click', doSearch);
 $('search-input').addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(); });
 
-// ─── Boot ────────────────────────────────────
-load();
+$('veronica-btn').addEventListener('click', doVeronicaSearch);
+$('veronica-input').addEventListener('keydown', e => { if (e.key === 'Enter') doVeronicaSearch(); });
+
+// ── Boot ──
+showHome();
 </script>
 </body>
 </html>
