@@ -369,11 +369,11 @@ const TYPES = {
 const typeInfo = t => TYPES[t] || { icon: '❓', color: '', navigable: false };
 
 const HOME_SERVERS = [
-  { icon: '🌍', name: 'Floodgap Systems',     host: 'gopher.floodgap.com', port: 70, selector: '' },
-  { icon: '📰', name: 'Hacker News (Gopher)', host: 'hngopher.com',        port: 70, selector: '' },
-  { icon: '🎓', name: 'University of Minnesota', host: 'gopher.tc.umn.edu',     port: 70, selector: '' },
-  { icon: '🐧', name: 'SDF Public Access',    host: 'sdf.org',             port: 70, selector: '' },
-  { icon: '🗃', name: 'Quux.org',             host: 'gopher.quux.org',     port: 70, selector: '' },
+  // These are the most reliably online Gopher servers as of 2025-2026
+  { icon: '🌍', name: 'Floodgap Systems',       host: 'gopher.floodgap.com',  port: 70, selector: '' },
+  { icon: '📰', name: 'Hacker News (Gopher)',   host: 'hngopher.com',         port: 70, selector: '' },
+  { icon: '🐧', name: 'SDF Public Access',      host: 'sdf.org',              port: 70, selector: '' },
+  { icon: '📝', name: 'SDF Phlogosphere',       host: 'phlogosphere.org',     port: 70, selector: '' },
 ];
 
 // ── URL helpers ──
