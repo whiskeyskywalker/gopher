@@ -6,68 +6,74 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Gopher">
-  <meta name="theme-color" content="#f5f5f0">
+  <meta name="theme-color" id="theme-color-meta" content="#f5f5f0">
   <title>Gopher Browser</title>
   <link rel="manifest" href="manifest.json">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
   <style>
+    /* ── Themes ── */
     :root {
-      --bg:           #f5f5f0;
-      --surface:      #ffffff;
-      --border:       #d0d0c8;
-      --accent:       #007a3d;
-      --accent2:      #0066aa;
-      --text:         #1a1a1a;
-      --muted:        #888880;
-      --danger:       #cc2233;
-      --dir-color:    #0066aa;
-      --txt-color:    #1a1a1a;
-      --search-color: #b36000;
-      --img-color:    #6644bb;
-      --info-color:   #999990;
-      --safe-top:     env(safe-area-inset-top, 0px);
-      --safe-bottom:  env(safe-area-inset-bottom, 0px);
-      --font:         'IBM Plex Mono', monospace;
+      --bg: #f5f5f0; --surface: #ffffff; --border: #d0d0c8; --accent: #007a3d;
+      --accent2: #0066aa; --text: #1a1a1a; --muted: #888880; --danger: #cc2233;
+      --dir-color: #0066aa; --txt-color: #1a1a1a; --search-color: #b36000;
+      --img-color: #6644bb; --info-color: #999990; --log-bg: #f9f9f6;
+      --safe-top: env(safe-area-inset-top,0px); --safe-bottom: env(safe-area-inset-bottom,0px);
+      --font: 'IBM Plex Mono', monospace;
     }
+    [data-theme="dark"] {
+      --bg: #0a0a0a; --surface: #111; --border: #222; --accent: #00cc66;
+      --accent2: #00aaff; --text: #e8e8e8; --muted: #555; --danger: #ff4455;
+      --dir-color: #00aaff; --txt-color: #e8e8e8; --search-color: #ffaa00;
+      --img-color: #bb88ff; --info-color: #444; --log-bg: #0d0d0d;
+    }
+    [data-theme="amber"] {
+      --bg: #1a1200; --surface: #221900; --border: #3a2c00; --accent: #ffaa00;
+      --accent2: #ffcc44; --text: #ffdd88; --muted: #886600; --danger: #ff4422;
+      --dir-color: #ffcc44; --txt-color: #ffdd88; --search-color: #ff8800;
+      --img-color: #ffaa44; --info-color: #664400; --log-bg: #160f00;
+    }
+    [data-theme="green"] {
+      --bg: #001a00; --surface: #002200; --border: #003300; --accent: #00ff44;
+      --accent2: #44ffaa; --text: #88ff88; --muted: #336633; --danger: #ff4422;
+      --dir-color: #44ffaa; --txt-color: #88ff88; --search-color: #aaff00;
+      --img-color: #00ffcc; --info-color: #225522; --log-bg: #001500;
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--font); overflow: hidden; }
-
     #app { display: flex; flex-direction: column; height: 100dvh; padding-top: var(--safe-top); padding-bottom: var(--safe-bottom); }
 
     /* Header */
     #header { background: var(--bg); border-bottom: 1px solid var(--border); padding: 8px 12px; flex-shrink: 0; }
-    #toolbar { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+    #toolbar { display: flex; align-items: center; gap: 5px; margin-bottom: 8px; }
     .icon-btn {
       background: none; border: 1px solid var(--border); color: var(--text);
-      font-family: var(--font); font-size: 16px; width: 36px; height: 36px;
+      font-family: var(--font); font-size: 15px; width: 34px; height: 34px;
       border-radius: 8px; display: flex; align-items: center; justify-content: center;
       cursor: pointer; flex-shrink: 0; transition: border-color 0.15s, color 0.15s;
     }
     .icon-btn:active { background: var(--surface); }
     .icon-btn:disabled { opacity: 0.3; }
     .icon-btn.active { border-color: var(--accent); color: var(--accent); }
-    #title-bar { flex: 1; text-align: center; font-size: 12px; color: var(--muted); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; padding: 0 4px; }
-    #address-row { display: flex; gap: 6px; align-items: center; }
+    #title-bar { flex: 1; text-align: center; font-size: 11px; color: var(--muted); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; padding: 0 2px; }
+    #address-row { display: flex; gap: 6px; align-items: center; margin-bottom: 6px; }
     #address-input {
       flex: 1; background: var(--surface); border: 1px solid var(--border); color: var(--text);
-      font-family: var(--font); font-size: 13px; padding: 8px 10px; border-radius: 8px; outline: none; transition: border-color 0.15s;
+      font-family: var(--font); font-size: 13px; padding: 7px 10px; border-radius: 8px; outline: none; transition: border-color 0.15s;
     }
     #address-input:focus { border-color: var(--accent); }
     #address-input::placeholder { color: var(--muted); }
-    #go-btn { background: var(--accent); color: #fff; border: none; font-family: var(--font); font-size: 13px; font-weight: 600; padding: 8px 14px; border-radius: 8px; cursor: pointer; flex-shrink: 0; }
+    #go-btn { background: var(--accent); color: var(--bg); border: none; font-family: var(--font); font-size: 13px; font-weight: 600; padding: 7px 14px; border-radius: 8px; cursor: pointer; flex-shrink: 0; }
     #go-btn:active { opacity: 0.8; }
-
-    /* Veronica search bar */
-    #veronica-bar { display: flex; gap: 6px; align-items: center; margin-top: 8px; }
+    #veronica-bar { display: flex; gap: 6px; align-items: center; }
     #veronica-input {
       flex: 1; background: var(--surface); border: 1px solid var(--border); color: var(--text);
       font-family: var(--font); font-size: 13px; padding: 7px 10px; border-radius: 8px; outline: none; transition: border-color 0.15s;
     }
     #veronica-input:focus { border-color: var(--search-color); }
     #veronica-input::placeholder { color: var(--muted); }
-    #veronica-btn { background: var(--search-color); color: #fff; border: none; font-family: var(--font); font-size: 12px; font-weight: 600; padding: 7px 12px; border-radius: 8px; cursor: pointer; flex-shrink: 0; white-space: nowrap; }
-    #veronica-btn:active { opacity: 0.8; }
+    #veronica-btn { background: var(--search-color); color: var(--bg); border: none; font-family: var(--font); font-size: 12px; font-weight: 600; padding: 7px 12px; border-radius: 8px; cursor: pointer; flex-shrink: 0; }
 
     /* Content */
     #content { flex: 1; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
@@ -80,16 +86,12 @@
     #loading p { font-size: 12px; color: var(--muted); animation: pulse 1.5s ease-in-out infinite; }
     @keyframes pulse { 0%,100%{opacity:0.4} 50%{opacity:1} }
 
-    /* Home view */
+    /* Home */
     #home-view { display: none; padding: 20px 16px; }
     #home-view.visible { display: block; }
     .home-section { margin-bottom: 24px; }
     .home-section h2 { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
-    .home-server {
-      display: flex; align-items: center; gap: 10px; padding: 10px 12px;
-      background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
-      margin-bottom: 8px; cursor: pointer; transition: border-color 0.15s;
-    }
+    .home-server { display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 8px; cursor: pointer; transition: border-color 0.15s; }
     .home-server:active { border-color: var(--accent); }
     .home-server-icon { font-size: 18px; flex-shrink: 0; }
     .home-server-body { flex: 1; min-width: 0; }
@@ -97,7 +99,7 @@
     .home-server-host { font-size: 11px; color: var(--muted); margin-top: 2px; }
     .home-server-arrow { color: var(--muted); font-size: 14px; }
 
-    /* Menu view */
+    /* Menu */
     #menu-view { display: none; }
     #menu-view.visible { display: block; }
     .gopher-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 14px; border-bottom: 1px solid var(--border); cursor: default; transition: background 0.1s; }
@@ -114,14 +116,20 @@
     .type-image  .item-text { color: var(--img-color); }
     .type-info   .item-text { color: var(--info-color); font-size: 12px; }
     .type-error  .item-text { color: var(--danger); }
-    .type-html   .item-text { color: #2a8a4a; }
+    .type-html   .item-text { color: var(--accent); }
 
-    /* Text view */
+    /* Text */
     #text-view { display: none; padding: 16px; }
     #text-view.visible { display: block; }
     #text-content { font-size: 13px; line-height: 1.6; white-space: pre-wrap; word-break: break-word; color: var(--text); }
 
-    /* Error view */
+    /* Image view */
+    #image-view { display: none; flex-direction: column; align-items: center; padding: 20px; gap: 12px; }
+    #image-view.visible { display: flex; }
+    #image-view img { max-width: 100%; border-radius: 8px; border: 1px solid var(--border); }
+    #image-title { font-size: 12px; color: var(--muted); }
+
+    /* Error */
     #error-view { display: none; flex-direction: column; align-items: center; justify-content: center; height: 100%; gap: 12px; padding: 32px; text-align: center; }
     #error-view.visible { display: flex; }
     #error-icon { font-size: 48px; }
@@ -147,14 +155,56 @@
     #search-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200; align-items: center; justify-content: center; padding: 24px; }
     #search-overlay.visible { display: flex; }
     #search-box { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; width: 100%; max-width: 340px; }
-    #search-box h3 { font-size: 14px; margin-bottom: 12px; color: var(--search-color); }
+    #search-box h3 { font-size: 14px; margin-bottom: 6px; color: var(--search-color); }
     #search-server-label { font-size: 11px; color: var(--muted); margin-bottom: 10px; }
     #search-input { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--text); font-family: var(--font); font-size: 14px; padding: 10px; border-radius: 8px; outline: none; margin-bottom: 12px; }
     #search-input:focus { border-color: var(--search-color); }
     .search-btns { display: flex; gap: 8px; justify-content: flex-end; }
     .search-btns button { font-family: var(--font); font-size: 13px; padding: 8px 16px; border-radius: 8px; cursor: pointer; }
     #search-cancel { background: none; border: 1px solid var(--border); color: var(--muted); }
-    #search-go { background: var(--search-color); border: none; color: #fff; font-weight: 600; }
+    #search-go { background: var(--search-color); border: none; color: var(--bg); font-weight: 600; }
+
+    /* Theme picker sheet */
+    #theme-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; align-items: flex-end; }
+    #theme-overlay.visible { display: flex; }
+    #theme-sheet { background: var(--surface); border-top: 1px solid var(--border); border-radius: 16px 16px 0 0; width: 100%; padding: 20px 16px calc(20px + var(--safe-bottom)); }
+    #theme-sheet h2 { font-size: 15px; font-weight: 600; margin-bottom: 16px; }
+    .theme-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .theme-opt {
+      padding: 14px 12px; border-radius: 10px; border: 2px solid transparent;
+      cursor: pointer; text-align: center; font-family: var(--font); font-size: 13px; font-weight: 500;
+      transition: border-color 0.15s;
+    }
+    .theme-opt.selected { border-color: var(--accent); }
+    .theme-opt[data-theme-name="light"]  { background: #f5f5f0; color: #1a1a1a; border-color: #d0d0c8; }
+    .theme-opt[data-theme-name="dark"]   { background: #0a0a0a; color: #e8e8e8; border-color: #222; }
+    .theme-opt[data-theme-name="amber"]  { background: #1a1200; color: #ffdd88; border-color: #3a2c00; }
+    .theme-opt[data-theme-name="green"]  { background: #001a00; color: #88ff88; border-color: #003300; }
+    .theme-opt.selected[data-theme-name="light"]  { border-color: #007a3d; }
+    .theme-opt.selected[data-theme-name="dark"]   { border-color: #00cc66; }
+    .theme-opt.selected[data-theme-name="amber"]  { border-color: #ffaa00; }
+    .theme-opt.selected[data-theme-name="green"]  { border-color: #00ff44; }
+    #theme-close-btn { margin-top: 16px; width: 100%; padding: 10px; background: none; border: 1px solid var(--border); color: var(--muted); font-family: var(--font); font-size: 13px; border-radius: 8px; cursor: pointer; }
+
+    /* Connection log panel */
+    #log-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; align-items: flex-end; }
+    #log-overlay.visible { display: flex; }
+    #log-sheet { background: var(--log-bg); border-top: 1px solid var(--border); border-radius: 16px 16px 0 0; width: 100%; max-height: 65dvh; display: flex; flex-direction: column; padding-bottom: var(--safe-bottom); }
+    #log-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 12px; border-bottom: 1px solid var(--border); }
+    #log-header h2 { font-size: 15px; font-weight: 600; }
+    #log-header-right { display: flex; gap: 8px; align-items: center; }
+    #log-clear { background: none; border: none; color: var(--danger); font-family: var(--font); font-size: 12px; cursor: pointer; }
+    #log-close { background: none; border: none; color: var(--muted); font-size: 20px; cursor: pointer; font-family: var(--font); }
+    #log-list { overflow-y: auto; flex: 1; padding: 8px 0; }
+    .log-entry { padding: 8px 16px; border-bottom: 1px solid var(--border); }
+    .log-entry:last-child { border-bottom: none; }
+    .log-time { font-size: 10px; color: var(--muted); }
+    .log-host { font-size: 12px; color: var(--accent2); margin: 2px 0; }
+    .log-sel  { font-size: 11px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .log-status { font-size: 10px; margin-top: 3px; }
+    .log-status.ok  { color: var(--accent); }
+    .log-status.err { color: var(--danger); }
+    #log-empty { padding: 40px; text-align: center; color: var(--muted); font-size: 13px; }
 
     /* Font controls */
     #text-controls { display: none; position: fixed; bottom: calc(16px + var(--safe-bottom)); right: 16px; flex-direction: column; gap: 4px; z-index: 50; }
@@ -168,13 +218,15 @@
 <div id="app">
   <div id="header">
     <div id="toolbar">
-      <button class="icon-btn" id="back-btn"    disabled title="Back">←</button>
-      <button class="icon-btn" id="forward-btn" disabled title="Forward">→</button>
-      <button class="icon-btn" id="home-btn"    title="Home">⌂</button>
-      <button class="icon-btn" id="reload-btn"  title="Reload">↺</button>
+      <button class="icon-btn" id="back-btn"    disabled>←</button>
+      <button class="icon-btn" id="forward-btn" disabled>→</button>
+      <button class="icon-btn" id="home-btn">⌂</button>
+      <button class="icon-btn" id="reload-btn">↺</button>
       <div id="title-bar">Gopherspace</div>
-      <button class="icon-btn" id="star-btn"    title="Bookmark">☆</button>
-      <button class="icon-btn" id="bm-btn"      title="Bookmarks">≡</button>
+      <button class="icon-btn" id="star-btn">☆</button>
+      <button class="icon-btn" id="log-btn" title="Connection Log">▤</button>
+      <button class="icon-btn" id="theme-btn" title="Themes">◑</button>
+      <button class="icon-btn" id="bm-btn" title="Bookmarks">≡</button>
     </div>
     <div id="address-row">
       <input id="address-input" type="text" placeholder="gopher://host:port/selector"
@@ -189,18 +241,11 @@
   </div>
 
   <div id="content">
-    <div id="loading">
-      <div class="spinner"></div>
-      <p>Fetching from Gopherspace…</p>
-    </div>
-
+    <div id="loading"><div class="spinner"></div><p>Fetching from Gopherspace…</p></div>
     <div id="home-view"></div>
     <div id="menu-view"></div>
-
-    <div id="text-view">
-      <pre id="text-content"></pre>
-    </div>
-
+    <div id="text-view"><pre id="text-content"></pre></div>
+    <div id="image-view"><div id="image-title"></div></div>
     <div id="error-view">
       <div id="error-icon">⚠</div>
       <div id="error-title">Connection Error</div>
@@ -215,16 +260,15 @@
   <button class="size-btn" id="font-dn">−</button>
 </div>
 
+<!-- Bookmarks -->
 <div id="bm-overlay">
   <div id="bm-sheet">
-    <div id="bm-header">
-      <h2>Bookmarks</h2>
-      <button id="bm-close">✕</button>
-    </div>
+    <div id="bm-header"><h2>Bookmarks</h2><button id="bm-close">✕</button></div>
     <div id="bm-list"></div>
   </div>
 </div>
 
+<!-- Search dialog -->
 <div id="search-overlay">
   <div id="search-box">
     <h3>🔍 Gopher Search</h3>
@@ -237,17 +281,60 @@
   </div>
 </div>
 
+<!-- Theme picker -->
+<div id="theme-overlay">
+  <div id="theme-sheet">
+    <h2>Choose Theme</h2>
+    <div class="theme-options">
+      <div class="theme-opt" data-theme-name="light">☀ Light</div>
+      <div class="theme-opt" data-theme-name="dark">🌙 Dark</div>
+      <div class="theme-opt" data-theme-name="amber">🟡 Amber</div>
+      <div class="theme-opt" data-theme-name="green">🟢 Phosphor</div>
+    </div>
+    <button id="theme-close-btn">Done</button>
+  </div>
+</div>
+
+<!-- Connection log -->
+<div id="log-overlay">
+  <div id="log-sheet">
+    <div id="log-header">
+      <h2>Connection Log</h2>
+      <div id="log-header-right">
+        <button id="log-clear">Clear</button>
+        <button id="log-close">✕</button>
+      </div>
+    </div>
+    <div id="log-list"></div>
+  </div>
+</div>
+
 <script>
 const PROXY_URL = 'https://gopher-7oxz.onrender.com';
+
+// ── Theme ──
+const THEME_COLORS = { light: '#f5f5f0', dark: '#0a0a0a', amber: '#1a1200', green: '#001a00' };
+let currentTheme = localStorage.getItem('gopher_theme') || 'light';
+function applyTheme(t) {
+  currentTheme = t;
+  document.documentElement.dataset.theme = t === 'light' ? '' : t;
+  document.getElementById('theme-color-meta').content = THEME_COLORS[t];
+  localStorage.setItem('gopher_theme', t);
+  document.querySelectorAll('.theme-opt').forEach(el => {
+    el.classList.toggle('selected', el.dataset.themeName === t);
+  });
+}
+applyTheme(currentTheme);
 
 // ── State ──
 let backHistory    = [];
 let forwardHistory = [];
-let current        = null; // set after showHome()
+let current        = null;
+let onHomePage     = true;
 let bookmarks      = JSON.parse(localStorage.getItem('gopher_bookmarks') || '[]');
 let fontSize       = parseInt(localStorage.getItem('gopher_fontsize') || '13');
 let pendingSearch  = null;
-let onHomePage     = true;
+let connLog        = [];
 
 // ── DOM ──
 const $ = id => document.getElementById(id);
@@ -255,6 +342,7 @@ const addressInput = $('address-input');
 const menuView     = $('menu-view');
 const homeView     = $('home-view');
 const textView     = $('text-view');
+const imageView    = $('image-view');
 const textContent  = $('text-content');
 const errorView    = $('error-view');
 const loading      = $('loading');
@@ -269,22 +357,23 @@ const TYPES = {
   '7': { icon: '🔍', color: 'type-search', navigable: true  },
   'h': { icon: '🌐', color: 'type-html',   navigable: true  },
   'i': { icon: '',   color: 'type-info',   navigable: false },
-  'g': { icon: '🖼', color: 'type-image',  navigable: false },
-  'I': { icon: '🖼', color: 'type-image',  navigable: false },
-  '9': { icon: '⬇', color: 'type-bin',    navigable: false },
-  's': { icon: '🎵', color: 'type-sound',  navigable: false },
+  'g': { icon: '🖼', color: 'type-image',  navigable: true  },
+  'I': { icon: '🖼', color: 'type-image',  navigable: true  },
+  '9': { icon: '⬇', color: 'type-bin',    navigable: true  },
+  '4': { icon: '⬇', color: 'type-bin',    navigable: true  },
+  '5': { icon: '⬇', color: 'type-bin',    navigable: true  },
+  '6': { icon: '⬇', color: 'type-bin',    navigable: true  },
+  's': { icon: '🎵', color: 'type-sound',  navigable: true  },
   '3': { icon: '⚠', color: 'type-error',  navigable: false },
 };
 const typeInfo = t => TYPES[t] || { icon: '❓', color: '', navigable: false };
 
-// ── Popular Gopher servers for home page ──
 const HOME_SERVERS = [
-  { icon: '🌍', name: 'Floodgap Systems',    host: 'gopher.floodgap.com',   port: 70, selector: '', desc: 'The hub of Gopherspace' },
-  { icon: '📚', name: 'Project Gutenberg',   host: 'gutenberg.net',          port: 70, selector: '', desc: 'Free classic literature' },
-  { icon: '📰', name: 'Hacker News (Gopher)',host: 'hngopher.com',           port: 70, selector: '', desc: 'Tech news in Gopher form' },
-  { icon: '🗃', name: 'Quux.org',            host: 'gopher.quux.org',        port: 70, selector: '', desc: 'Classic Gopher archive' },
-  { icon: '🖥', name: 'The Old Net',         host: 'gopher.theoldnet.com',   port: 70, selector: '', desc: 'Retro internet archive' },
-  { icon: '🐧', name: 'SDF Public Access',   host: 'sdf.org',                port: 70, selector: '', desc: 'Public Unix system' },
+  { icon: '🌍', name: 'Floodgap Systems',     host: 'gopher.floodgap.com', port: 70, selector: '' },
+  { icon: '📰', name: 'Hacker News (Gopher)', host: 'hngopher.com',        port: 70, selector: '' },
+  { icon: '🖥', name: 'The Old Net',          host: 'gopher.theoldnet.com',port: 70, selector: '' },
+  { icon: '🐧', name: 'SDF Public Access',    host: 'sdf.org',             port: 70, selector: '' },
+  { icon: '🗃', name: 'Quux.org',             host: 'gopher.quux.org',     port: 70, selector: '' },
 ];
 
 // ── URL helpers ──
@@ -306,27 +395,58 @@ function parseURL(s) {
     return { host, port: parseInt(portStr) || 70, selector: sel };
   }
 }
-
 function currentURL() {
   if (!current) return '';
   return `gopher://${current.host}:${current.port}${current.selector || '/'}`;
 }
 
+// ── Connection Log ──
+function logRequest(host, port, selector, status, ms) {
+  const now = new Date();
+  const timeStr = now.toLocaleTimeString();
+  connLog.unshift({ time: timeStr, host, port, selector, status, ms });
+  if (connLog.length > 100) connLog.pop();
+}
+function renderLog() {
+  const list = $('log-list');
+  if (!connLog.length) { list.innerHTML = '<div id="log-empty">No connections yet.</div>'; return; }
+  list.innerHTML = connLog.map(e => `
+    <div class="log-entry">
+      <div class="log-time">${e.time}</div>
+      <div class="log-host">${esc(e.host)}:${e.port}</div>
+      <div class="log-sel">${esc(e.selector || '/')}</div>
+      <div class="log-status ${e.status === 'ok' ? 'ok' : 'err'}">${e.status === 'ok' ? '✓ ' + e.ms + 'ms' : '✗ ' + esc(e.status)}</div>
+    </div>`).join('');
+}
+
 // ── Fetch ──
 async function gopherFetch(host, port, selector) {
-  const params = new URLSearchParams({ host, port, selector });
-  const resp = await fetch(`${PROXY_URL}/gopher?${params}`);
-  if (!resp.ok) throw new Error(`Proxy error: ${resp.status}`);
-  return resp.json();
+  const t0 = Date.now();
+  try {
+    const params = new URLSearchParams({ host, port, selector });
+    const resp = await fetch(`${PROXY_URL}/gopher?${params}`);
+    if (!resp.ok) throw new Error(`Proxy error: ${resp.status}`);
+    const json = await resp.json();
+    logRequest(host, port, selector, 'ok', Date.now() - t0);
+    return json;
+  } catch (e) {
+    logRequest(host, port, selector, e.message, Date.now() - t0);
+    throw e;
+  }
 }
 
 // ── Navigation ──
-async function navigate(host, port, selector, title) {
+async function navigate(host, port, selector, title, type) {
   if (current) backHistory.push({ ...current, onHomePage });
   forwardHistory = [];
-  current = { host, port, selector, title: title || `${host}${selector}` };
+  current = { host, port, selector, title: title || `${host}${selector}`, itemType: type };
   onHomePage = false;
-  updateNavBtns();
+  updateNavBtns(); updateAddress(); updateStar();
+
+  // Handle by item type
+  if (type === 'g' || type === 'I') { await loadImage(host, port, selector, title); return; }
+  if (type === '9' || type === '4' || type === '5' || type === '6') { triggerDownload(host, port, selector, title); return; }
+  if (type === 's') { triggerDownload(host, port, selector, title); return; }
   await load();
 }
 
@@ -335,9 +455,10 @@ async function goBack() {
   if (current) forwardHistory.push({ ...current, onHomePage });
   const prev = backHistory.pop();
   onHomePage = prev.onHomePage || false;
-  current = prev;
-  updateNavBtns();
+  current = { host: prev.host, port: prev.port, selector: prev.selector, title: prev.title, itemType: prev.itemType };
+  updateNavBtns(); updateAddress(); updateStar();
   if (onHomePage) { showHome(); return; }
+  if (prev.itemType === 'g' || prev.itemType === 'I') { await loadImage(current.host, current.port, current.selector, current.title); return; }
   await load();
 }
 
@@ -346,35 +467,66 @@ async function goForward() {
   if (current) backHistory.push({ ...current, onHomePage });
   const next = forwardHistory.pop();
   onHomePage = next.onHomePage || false;
-  current = next;
-  updateNavBtns();
+  current = { host: next.host, port: next.port, selector: next.selector, title: next.title, itemType: next.itemType };
+  updateNavBtns(); updateAddress(); updateStar();
   if (onHomePage) { showHome(); return; }
+  if (next.itemType === 'g' || next.itemType === 'I') { await loadImage(current.host, current.port, current.selector, current.title); return; }
   await load();
 }
 
 async function load() {
   showLoading();
-  updateAddress();
-  updateStar();
   try {
     const result = await gopherFetch(current.host, current.port, current.selector);
     if (result.type === 'menu') renderMenu(result.items);
     else if (result.type === 'text') renderText(result.content);
     else showError('Unknown response type');
+  } catch (e) { showError(e.message || 'Failed to connect'); }
+}
+
+// ── Image loading ──
+async function loadImage(host, port, selector, title) {
+  showLoading();
+  try {
+    const t0 = Date.now();
+    const params = new URLSearchParams({ host, port, selector });
+    const resp = await fetch(`${PROXY_URL}/image?${params}`);
+    if (!resp.ok) throw new Error('Image fetch failed');
+    const json = await resp.json();
+    logRequest(host, port, selector, 'ok', Date.now() - t0);
+    // Render image
+    imageView.innerHTML = `
+      <div id="image-title" style="font-size:12px;color:var(--muted);margin-bottom:8px;">${esc(title || selector)}</div>
+      <img src="data:${json.mime};base64,${json.data}" alt="${esc(title || '')}" style="max-width:100%;border-radius:8px;border:1px solid var(--border);">
+    `;
+    showView('image');
   } catch (e) {
-    showError(e.message || 'Failed to connect');
+    logRequest(host, port, selector, e.message, 0);
+    showError('Could not load image: ' + e.message);
   }
 }
 
-// ── Home page ──
-function showHome() {
-  onHomePage = true;
-  current = null;
-  addressInput.value = '';
-  $('title-bar').textContent = 'Gopherspace';
-  updateNavBtns();
-  updateStar();
+// ── Binary download ──
+function triggerDownload(host, port, selector, title) {
+  const filename = selector.split('/').pop() || title || 'download';
+  const params = new URLSearchParams({ host, port, selector, filename });
+  const link = document.createElement('a');
+  link.href = `${PROXY_URL}/binary?${params}`;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  logRequest(host, port, selector, 'ok (download)', 0);
+  // Stay on current page but show a brief status
+  $('title-bar').textContent = '⬇ Downloading ' + filename;
+  setTimeout(() => updateAddress(), 2000);
+}
 
+// ── Home ──
+function showHome() {
+  onHomePage = true; current = null;
+  addressInput.value = ''; $('title-bar').textContent = 'Gopherspace';
+  updateNavBtns(); updateStar();
   homeView.innerHTML = `
     <div class="home-section">
       <h2>Popular Servers</h2>
@@ -394,28 +546,17 @@ function showHome() {
       ${bookmarks.map((url, i) => `
         <div class="home-server" data-bm="${i}">
           <div class="home-server-icon">★</div>
-          <div class="home-server-body">
-            <div class="home-server-name" style="color:var(--accent2)">${esc(url)}</div>
-          </div>
+          <div class="home-server-body"><div class="home-server-name" style="color:var(--accent2)">${esc(url)}</div></div>
           <div class="home-server-arrow">›</div>
         </div>`).join('')}
     </div>` : ''}
   `;
-
   homeView.querySelectorAll('.home-server[data-idx]').forEach(el => {
-    el.addEventListener('click', () => {
-      const s = HOME_SERVERS[parseInt(el.dataset.idx)];
-      navigate(s.host, s.port, s.selector, s.name);
-    });
+    el.addEventListener('click', () => { const s = HOME_SERVERS[parseInt(el.dataset.idx)]; navigate(s.host, s.port, s.selector, s.name, '1'); });
   });
   homeView.querySelectorAll('.home-server[data-bm]').forEach(el => {
-    el.addEventListener('click', () => {
-      const url = bookmarks[parseInt(el.dataset.bm)];
-      const parsed = parseURL(url);
-      if (parsed) navigate(parsed.host, parsed.port, parsed.selector, url);
-    });
+    el.addEventListener('click', () => { const url = bookmarks[parseInt(el.dataset.bm)]; const p = parseURL(url); if (p) navigate(p.host, p.port, p.selector, url); });
   });
-
   showView('home');
 }
 
@@ -436,13 +577,12 @@ function renderMenu(items) {
               ${info.navigable ? '<div class="item-arrow">›</div>' : ''}
             </div>`;
   }).join('');
-
   showView('menu');
   menuView.querySelectorAll('.navigable').forEach(el => {
     el.addEventListener('click', () => {
       const { type, host, port, sel: selector, text } = el.dataset;
       if (type === '7') openSearch(host, parseInt(port), selector, text);
-      else navigate(host, parseInt(port), selector, text);
+      else navigate(host, parseInt(port), selector, text, type);
     });
   });
 }
@@ -456,49 +596,37 @@ function renderText(text) {
 
 // ── Views ──
 function showView(which) {
-  loading.classList.remove('visible');
-  homeView.classList.remove('visible');
-  menuView.classList.remove('visible');
-  textView.classList.remove('visible');
-  errorView.classList.remove('visible');
+  [loading, homeView, menuView, textView, imageView, errorView].forEach(v => v.classList.remove('visible'));
   $('text-controls').classList.remove('visible');
   if (which === 'home')  homeView.classList.add('visible');
   if (which === 'menu')  menuView.classList.add('visible');
   if (which === 'text')  { textView.classList.add('visible'); $('text-controls').classList.add('visible'); }
+  if (which === 'image') imageView.classList.add('visible');
   if (which === 'error') errorView.classList.add('visible');
   $('content').scrollTop = 0;
 }
-
 function showLoading() {
-  loading.classList.add('visible');
-  homeView.classList.remove('visible');
-  menuView.classList.remove('visible');
-  textView.classList.remove('visible');
-  errorView.classList.remove('visible');
+  [homeView, menuView, textView, imageView, errorView].forEach(v => v.classList.remove('visible'));
   $('text-controls').classList.remove('visible');
+  loading.classList.add('visible');
 }
-
 function showError(msg) { $('error-msg').textContent = msg; showView('error'); }
 
-// ── UI ──
+// ── UI updates ──
 function updateAddress() {
   addressInput.value = current ? currentURL() : '';
   $('title-bar').textContent = current ? (current.title || currentURL()) : 'Gopherspace';
 }
-
 function updateNavBtns() {
   backBtn.disabled    = backHistory.length === 0;
   forwardBtn.disabled = forwardHistory.length === 0;
 }
-
 function updateStar() {
   if (!current) { starBtn.textContent = '☆'; starBtn.classList.remove('active'); return; }
-  const url = currentURL();
-  const has = bookmarks.includes(url);
+  const has = bookmarks.includes(currentURL());
   starBtn.textContent = has ? '★' : '☆';
   starBtn.classList.toggle('active', has);
 }
-
 function esc(s) {
   return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
@@ -512,7 +640,6 @@ function toggleBookmark() {
   localStorage.setItem('gopher_bookmarks', JSON.stringify(bookmarks));
   updateStar();
 }
-
 function renderBookmarks() {
   const list = $('bm-list');
   if (!bookmarks.length) { list.innerHTML = `<div id="bm-empty">No bookmarks yet.<br>Tap ☆ while browsing to save a location.</div>`; return; }
@@ -520,51 +647,43 @@ function renderBookmarks() {
     `<div class="bm-item"><div class="bm-url" data-url="${esc(url)}">${esc(url)}</div><button class="bm-delete" data-idx="${i}">✕</button></div>`
   ).join('');
   list.querySelectorAll('.bm-url').forEach(el => {
-    el.addEventListener('click', () => {
-      const p = parseURL(el.dataset.url);
-      if (p) { closeBM(); navigate(p.host, p.port, p.selector, el.dataset.url); }
-    });
+    el.addEventListener('click', () => { const p = parseURL(el.dataset.url); if (p) { closeBM(); navigate(p.host, p.port, p.selector, el.dataset.url); } });
   });
   list.querySelectorAll('.bm-delete').forEach(el => {
     el.addEventListener('click', e => {
       e.stopPropagation();
       bookmarks.splice(parseInt(el.dataset.idx), 1);
       localStorage.setItem('gopher_bookmarks', JSON.stringify(bookmarks));
-      updateStar();
-      renderBookmarks();
+      updateStar(); renderBookmarks();
     });
   });
 }
-
 function openBM()  { renderBookmarks(); $('bm-overlay').classList.add('visible'); }
 function closeBM() { $('bm-overlay').classList.remove('visible'); }
 
-// ── Gopher search dialog (type 7) ──
+// ── Search ──
 function openSearch(host, port, selector, title) {
   pendingSearch = { host, port, selector, title };
-  $('search-server-label').textContent = `Server: ${host}`;
+  $('search-server-label').textContent = 'Server: ' + host;
   $('search-input').value = '';
   $('search-overlay').classList.add('visible');
   setTimeout(() => $('search-input').focus(), 100);
 }
-
 function doSearch() {
   const query = $('search-input').value.trim();
   if (!query || !pendingSearch) return;
   $('search-overlay').classList.remove('visible');
   const { host, port, selector, title } = pendingSearch;
-  navigate(host, port, selector + '\t' + query, title + ': ' + query);
+  navigate(host, port, selector + '\t' + query, title + ': ' + query, '7');
 }
-
-// ── Veronica-2 search ──
 function doVeronicaSearch() {
   const query = $('veronica-input').value.trim();
   if (!query) return;
-  navigate('gopher.floodgap.com', 70, '/v2/vs\t' + query, 'Veronica: ' + query);
+  navigate('gopher.floodgap.com', 70, '/v2/vs\t' + query, 'Veronica: ' + query, '7');
   $('veronica-input').value = '';
 }
 
-// ── Event listeners ──
+// ── Events ──
 backBtn.addEventListener('click', goBack);
 forwardBtn.addEventListener('click', goForward);
 $('reload-btn').addEventListener('click', () => { if (!onHomePage && current) load(); });
@@ -578,12 +697,8 @@ $('bm-btn').addEventListener('click', openBM);
 $('bm-close').addEventListener('click', closeBM);
 $('bm-overlay').addEventListener('click', e => { if (e.target === $('bm-overlay')) closeBM(); });
 
-$('go-btn').addEventListener('click', () => {
-  const p = parseURL(addressInput.value);
-  if (p) navigate(p.host, p.port, p.selector, addressInput.value);
-});
+$('go-btn').addEventListener('click', () => { const p = parseURL(addressInput.value); if (p) navigate(p.host, p.port, p.selector, addressInput.value); });
 addressInput.addEventListener('keydown', e => { if (e.key === 'Enter') $('go-btn').click(); });
-
 $('retry-btn').addEventListener('click', load);
 
 $('font-up').addEventListener('click', () => { fontSize = Math.min(24, fontSize+1); textContent.style.fontSize = fontSize+'px'; localStorage.setItem('gopher_fontsize', fontSize); });
@@ -596,7 +711,21 @@ $('search-input').addEventListener('keydown', e => { if (e.key === 'Enter') doSe
 $('veronica-btn').addEventListener('click', doVeronicaSearch);
 $('veronica-input').addEventListener('keydown', e => { if (e.key === 'Enter') doVeronicaSearch(); });
 
-// ── Boot ──
+// Theme
+$('theme-btn').addEventListener('click', () => $('theme-overlay').classList.add('visible'));
+$('theme-close-btn').addEventListener('click', () => $('theme-overlay').classList.remove('visible'));
+$('theme-overlay').addEventListener('click', e => { if (e.target === $('theme-overlay')) $('theme-overlay').classList.remove('visible'); });
+document.querySelectorAll('.theme-opt').forEach(el => {
+  el.addEventListener('click', () => applyTheme(el.dataset.themeName));
+});
+
+// Log
+$('log-btn').addEventListener('click', () => { renderLog(); $('log-overlay').classList.add('visible'); });
+$('log-close').addEventListener('click', () => $('log-overlay').classList.remove('visible'));
+$('log-overlay').addEventListener('click', e => { if (e.target === $('log-overlay')) $('log-overlay').classList.remove('visible'); });
+$('log-clear').addEventListener('click', () => { connLog = []; renderLog(); });
+
+// Boot
 showHome();
 </script>
 </body>
