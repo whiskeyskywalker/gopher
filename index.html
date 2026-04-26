@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -7,7 +6,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Gopher">
-  <meta name="theme-color" content="#0a0a0a">
+  <meta name="theme-color" content="#f5f5f0">
   <title>Gopher Browser</title>
   <link rel="manifest" href="manifest.json">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,19 +14,19 @@
 
   <style>
     :root {
-      --bg:        #0a0a0a;
-      --surface:   #111111;
-      --border:    #222222;
-      --accent:    #00ff88;
-      --accent2:   #00ccff;
-      --text:      #e8e8e8;
-      --muted:     #555555;
+      --bg:        #f5f5f0;
+      --surface:   #ffffff;
+      --border:    #d0d0c8;
+      --accent:    #007a3d;
+      --accent2:   #0066aa;
+      --text:      #1a1a1a;
+      --muted:     #888880;
       --danger:    #ff4455;
-      --dir-color: #00ccff;
-      --txt-color: #e8e8e8;
-      --search-color: #ffaa00;
-      --img-color: #aa88ff;
-      --info-color: #444444;
+      --dir-color: #0066aa;
+      --txt-color: #1a1a1a;
+      --search-color: #b36000;
+      --img-color: #6644bb;
+      --info-color: #999990;
       --safe-top: env(safe-area-inset-top, 0px);
       --safe-bottom: env(safe-area-inset-bottom, 0px);
       --font: 'IBM Plex Mono', monospace;
@@ -107,9 +106,9 @@
 
     #address-input {
       flex: 1;
-      background: var(--surface);
+      background: var(--surface); border-top: 1px solid var(--border);
       border: 1px solid var(--border);
-      color: var(--accent);
+      color: var(--text);
       font-family: var(--font);
       font-size: 13px;
       padding: 8px 10px;
@@ -158,7 +157,7 @@
       width: 32px;
       height: 32px;
       border: 2px solid var(--border);
-      border-top-color: var(--accent);
+      border-top-color: var(--text);
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
     }
@@ -260,7 +259,7 @@
       margin-top: 8px;
       background: none;
       border: 1px solid var(--accent);
-      color: var(--accent);
+      color: var(--text);
       font-family: var(--font);
       font-size: 13px;
       padding: 8px 20px;
@@ -280,7 +279,7 @@
     #bm-overlay.visible { display: flex; }
 
     #bm-sheet {
-      background: var(--surface);
+      background: var(--surface); border-top: 1px solid var(--border);
       border-radius: 16px 16px 0 0;
       width: 100%;
       max-height: 70dvh;
@@ -356,7 +355,7 @@
     }
     #search-overlay.visible { display: flex; }
     #search-box {
-      background: var(--surface);
+      background: var(--surface); border-top: 1px solid var(--border);
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 20px;
@@ -390,8 +389,8 @@
 
     /* ── Proxy Notice ── */
     #proxy-notice {
-      background: #1a1000;
-      border-bottom: 1px solid #332200;
+      background: #fff8e6;
+      border-bottom: 1px solid #f0d080;
       padding: 8px 14px;
       font-size: 11px;
       color: #ffaa00;
@@ -413,7 +412,7 @@
     }
     #text-controls.visible { display: flex; }
     .size-btn {
-      background: var(--surface);
+      background: var(--surface); border-top: 1px solid var(--border);
       border: 1px solid var(--border);
       color: var(--text);
       font-family: var(--font);
@@ -436,14 +435,13 @@
         0deg,
         transparent,
         transparent 2px,
-        rgba(0,0,0,0.03) 2px,
-        rgba(0,0,0,0.03) 4px
+        rgba(0,0,0,0.015) 2px,
+        rgba(0,0,0,0.015) 4px
       );
       pointer-events: none;
       z-index: 9999;
     }
   </style>
-
 </head>
 <body>
 <div id="app">
@@ -473,33 +471,28 @@
       <p>Fetching from Gopherspace…</p>
     </div>
 
-```
-<div id="menu-view"></div>
+    <div id="menu-view"></div>
 
-<div id="text-view">
-  <pre id="text-content"></pre>
-</div>
+    <div id="text-view">
+      <pre id="text-content"></pre>
+    </div>
 
-<div id="error-view">
-  <div id="error-icon">⚠</div>
-  <div id="error-title">Connection Error</div>
-  <div id="error-msg"></div>
-  <button id="retry-btn">Retry</button>
-</div>
-```
-
+    <div id="error-view">
+      <div id="error-icon">⚠</div>
+      <div id="error-title">Connection Error</div>
+      <div id="error-msg"></div>
+      <button id="retry-btn">Retry</button>
+    </div>
   </div>
 </div>
 
 <!-- Text size controls -->
-
 <div id="text-controls">
   <button class="size-btn" id="font-up">+</button>
   <button class="size-btn" id="font-dn">−</button>
 </div>
 
 <!-- Bookmarks Sheet -->
-
 <div id="bm-overlay">
   <div id="bm-sheet">
     <div id="bm-header">
@@ -511,7 +504,6 @@
 </div>
 
 <!-- Search Dialog -->
-
 <div id="search-overlay">
   <div id="search-box">
     <h3>Search</h3>
@@ -876,6 +868,5 @@ $('search-input').addEventListener('keydown', e => { if (e.key === 'Enter') doSe
 // ─── Boot ────────────────────────────────────
 load();
 </script>
-
 </body>
 </html>
