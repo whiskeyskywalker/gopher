@@ -123,6 +123,17 @@
     #text-view.visible { display: block; }
     #text-content { font-size: 13px; line-height: 1.6; white-space: pre-wrap; word-break: break-word; color: var(--text); }
 
+    /* Raw view */
+    #raw-view { display: none; padding: 16px; }
+    #raw-view.visible { display: block; }
+    #raw-content {
+      font-size: 12px; line-height: 1.5; white-space: pre-wrap; word-break: break-all;
+      color: var(--accent); background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; padding: 12px;
+    }
+    .raw-legend { font-size: 11px; color: var(--muted); margin-bottom: 10px; line-height: 1.8; }
+    .raw-legend span { display: inline-block; margin-right: 12px; }
+
     /* Image view */
     #image-view { display: none; flex-direction: column; align-items: center; padding: 20px; gap: 12px; }
     #image-view.visible { display: flex; }
@@ -224,6 +235,7 @@
       <button class="icon-btn" id="reload-btn">↺</button>
       <div id="title-bar">Gopherspace</div>
       <button class="icon-btn" id="star-btn">☆</button>
+      <button class="icon-btn" id="raw-btn" title="Raw view">&lt;/&gt;</button>
       <button class="icon-btn" id="log-btn" title="Connection Log">▤</button>
       <button class="icon-btn" id="theme-btn" title="Themes">◑</button>
       <button class="icon-btn" id="bm-btn" title="Bookmarks">≡</button>
@@ -246,6 +258,7 @@
     <div id="menu-view"></div>
     <div id="text-view"><pre id="text-content"></pre></div>
     <div id="image-view"><div id="image-title"></div></div>
+    <div id="raw-view"><div class="raw-legend"><span>0=text</span><span>1=dir</span><span>7=search</span><span>i=info</span><span>g/I=image</span><span>9=binary</span><span>·=tab</span></div><pre id="raw-content"></pre></div>
     <div id="error-view">
       <div id="error-icon">⚠</div>
       <div id="error-title">Connection Error</div>
@@ -334,6 +347,9 @@ let onHomePage     = true;
 let bookmarks      = JSON.parse(localStorage.getItem('gopher_bookmarks') || '[]');
 let fontSize       = parseInt(localStorage.getItem('gopher_fontsize') || '13');
 let pendingSearch  = null;
+let rawMode        = false;
+let lastRaw        = '';
+let lastResult     = null;
 let connLog        = [];
 
 // ── DOM ──
@@ -476,8 +492,12 @@ async function goForward() {
 
 async function load() {
   showLoading();
+  rawMode = false;
+  updateRawBtn();
   try {
     const result = await gopherFetch(current.host, current.port, current.selector);
+    lastRaw = result.raw || '';
+    lastResult = result;
     if (result.type === 'menu') renderMenu(result.items);
     else if (result.type === 'text') renderText(result.content);
     else showError('Unknown response type');
@@ -596,8 +616,9 @@ function renderText(text) {
 
 // ── Views ──
 function showView(which) {
-  [loading, homeView, menuView, textView, imageView, errorView].forEach(v => v.classList.remove('visible'));
+  [loading, homeView, menuView, textView, imageView, $('raw-view'), errorView].forEach(v => v.classList.remove('visible'));
   $('text-controls').classList.remove('visible');
+  if (which === 'raw')   $('raw-view').classList.add('visible');
   if (which === 'home')  homeView.classList.add('visible');
   if (which === 'menu')  menuView.classList.add('visible');
   if (which === 'text')  { textView.classList.add('visible'); $('text-controls').classList.add('visible'); }
@@ -606,7 +627,7 @@ function showView(which) {
   $('content').scrollTop = 0;
 }
 function showLoading() {
-  [homeView, menuView, textView, imageView, errorView].forEach(v => v.classList.remove('visible'));
+  [homeView, menuView, textView, imageView, $('raw-view'), errorView].forEach(v => v.classList.remove('visible'));
   $('text-controls').classList.remove('visible');
   loading.classList.add('visible');
 }
@@ -683,6 +704,33 @@ function doVeronicaSearch() {
   $('veronica-input').value = '';
 }
 
+// ── Raw mode ──
+function updateRawBtn() {
+  $('raw-btn').classList.toggle('active', rawMode);
+}
+
+function toggleRaw() {
+  if (onHomePage) return;
+  rawMode = !rawMode;
+  updateRawBtn();
+  if (rawMode) {
+    if (!lastRaw) { rawMode = false; updateRawBtn(); return; }
+    // Highlight tabs visually
+    const highlighted = lastRaw
+      .replace(/	/g, '·')
+      .replace(/
+/g, '');
+    $('raw-content').textContent = highlighted;
+    showView('raw');
+  } else {
+    // Go back to normal view — re-render from cache instantly
+    if (lastResult) {
+      if (lastResult.type === 'menu') renderMenu(lastResult.items);
+      else if (lastResult.type === 'text') renderText(lastResult.content);
+    }
+  }
+}
+
 // ── Events ──
 backBtn.addEventListener('click', goBack);
 forwardBtn.addEventListener('click', goForward);
@@ -693,6 +741,7 @@ $('home-btn').addEventListener('click', () => {
   showHome();
 });
 starBtn.addEventListener('click', toggleBookmark);
+$('raw-btn').addEventListener('click', toggleRaw);
 $('bm-btn').addEventListener('click', openBM);
 $('bm-close').addEventListener('click', closeBM);
 $('bm-overlay').addEventListener('click', e => { if (e.target === $('bm-overlay')) closeBM(); });
