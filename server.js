@@ -2,14 +2,12 @@ const http = require('http');
 const net  = require('net');
 const url  = require('url');
 
-const PORT = process.env.PORT || 3000;
-
-function corsHeaders() {
+function corsHeaders(contentType) {
   return {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type',
-    'Content-Type': 'application/json',
+    'Content-Type': contentType || 'application/json',
   };
 }
 
@@ -32,9 +30,6 @@ function parseMenu(raw) {
   return items;
 }
 
-// A real Gopher menu must have multiple lines where the host field
-// is a non-empty, non-fake hostname (not 'error.host' or '(NULL)').
-// Plain text files sometimes contain tabs but are NOT menus.
 function looksLikeMenu(raw) {
   const lines = raw.split('\n').slice(0, 30);
   let realMenuLines = 0;
@@ -44,13 +39,11 @@ function looksLikeMenu(raw) {
     const parts = trimmed.slice(1).split('\t');
     if (parts.length >= 4) {
       const host = parts[2].trim();
-      // Must have a real hostname — not empty, not a placeholder
       if (host && host !== '(NULL)' && host !== 'error.host' && host !== 'fake' && host.includes('.')) {
         realMenuLines++;
       }
     }
   }
-  // Require at least 2 real menu lines to be considered a menu
   return realMenuLines >= 2;
 }
 
@@ -58,7 +51,7 @@ function gopherFetch(host, port, selector) {
   return new Promise((resolve, reject) => {
     const socket = new net.Socket();
     let data = Buffer.alloc(0);
-    const timeout = setTimeout(() => { socket.destroy(); reject(new Error('Timed out')); }, 10000);
+    const timeout = setTimeout(() => { socket.destroy(); reject(new Error('Timed out')); }, 15000);
     socket.connect(port, host, () => { socket.write((selector || '') + '\r\n'); });
     socket.on('data', chunk => { data = Buffer.concat([data, chunk]); });
     socket.on('end', () => { clearTimeout(timeout); resolve(data); });
@@ -66,29 +59,92 @@ function gopherFetch(host, port, selector) {
   });
 }
 
+function isPrivate(host) {
+  return /^(localhost|127\.|10\.|192\.168\.|::1)/.test(host);
+}
+
 http.createServer(async (req, res) => {
   const h = corsHeaders();
   if (req.method === 'OPTIONS') { res.writeHead(204, h); res.end(); return; }
+
   const p = url.parse(req.url, true);
+
   if (p.pathname === '/' || p.pathname === '/health') {
     res.writeHead(200, h); res.end(JSON.stringify({ status: 'ok' })); return;
   }
-  if (p.pathname !== '/gopher') {
-    res.writeHead(404, h); res.end(JSON.stringify({ error: 'Not found' })); return;
+
+  // ── /gopher — text/menu responses ──
+  if (p.pathname === '/gopher') {
+    const host = p.query.host || '';
+    const port = parseInt(p.query.port) || 70;
+    const selector = p.query.selector || '';
+    if (!host) { res.writeHead(400, h); res.end(JSON.stringify({ error: 'Missing host' })); return; }
+    if (isPrivate(host)) { res.writeHead(403, h); res.end(JSON.stringify({ error: 'Private addresses not allowed' })); return; }
+    try {
+      const raw = await gopherFetch(host, port, selector);
+      const text = raw.toString('utf8');
+      const result = looksLikeMenu(text)
+        ? { type: 'menu', items: parseMenu(text) }
+        : { type: 'text', content: text.includes('\uFFFD') ? raw.toString('latin1') : text };
+      res.writeHead(200, h);
+      res.end(JSON.stringify(result));
+    } catch (err) {
+      res.writeHead(502, h); res.end(JSON.stringify({ error: err.message }));
+    }
+    return;
   }
-  const host = p.query.host || '';
-  const port = parseInt(p.query.port) || 70;
-  const selector = p.query.selector || '';
-  if (!host) { res.writeHead(400, h); res.end(JSON.stringify({ error: 'Missing host' })); return; }
-  try {
-    const raw = await gopherFetch(host, port, selector);
-    const text = raw.toString('utf8');
-    const result = looksLikeMenu(text)
-      ? { type: 'menu', items: parseMenu(text) }
-      : { type: 'text', content: text.includes('\uFFFD') ? raw.toString('latin1') : text };
-    res.writeHead(200, h);
-    res.end(JSON.stringify(result));
-  } catch (err) {
-    res.writeHead(502, h); res.end(JSON.stringify({ error: err.message }));
+
+  // ── /binary — raw file, streamed back with content-disposition ──
+  if (p.pathname === '/binary') {
+    const host = p.query.host || '';
+    const port = parseInt(p.query.port) || 70;
+    const selector = p.query.selector || '';
+    const filename = p.query.filename || 'download';
+    if (!host || isPrivate(host)) { res.writeHead(403, h); res.end(JSON.stringify({ error: 'Forbidden' })); return; }
+    try {
+      const raw = await gopherFetch(host, port, selector);
+      // Guess content type from filename
+      const ext = filename.split('.').pop().toLowerCase();
+      const mimeMap = {
+        gif: 'image/gif', jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png',
+        txt: 'text/plain', html: 'text/html', htm: 'text/html',
+        mp3: 'audio/mpeg', ogg: 'audio/ogg', wav: 'audio/wav',
+        pdf: 'application/pdf', zip: 'application/zip',
+      };
+      const mime = mimeMap[ext] || 'application/octet-stream';
+      res.writeHead(200, {
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': mime,
+        'Content-Disposition': `attachment; filename="${filename}"`,
+        'Content-Length': raw.length,
+      });
+      res.end(raw);
+    } catch (err) {
+      res.writeHead(502, corsHeaders()); res.end(JSON.stringify({ error: err.message }));
+    }
+    return;
   }
+
+  // ── /image — returns image as base64 JSON for inline display ──
+  if (p.pathname === '/image') {
+    const host = p.query.host || '';
+    const port = parseInt(p.query.port) || 70;
+    const selector = p.query.selector || '';
+    if (!host || isPrivate(host)) { res.writeHead(403, h); res.end(JSON.stringify({ error: 'Forbidden' })); return; }
+    try {
+      const raw = await gopherFetch(host, port, selector);
+      const ext = (selector.split('.').pop() || 'gif').toLowerCase();
+      const mimeMap = { gif: 'image/gif', jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', bmp: 'image/bmp' };
+      const mime = mimeMap[ext] || 'image/gif';
+      const b64 = raw.toString('base64');
+      res.writeHead(200, h);
+      res.end(JSON.stringify({ type: 'image', mime, data: b64 }));
+    } catch (err) {
+      res.writeHead(502, h); res.end(JSON.stringify({ error: err.message }));
+    }
+    return;
+  }
+
+  res.writeHead(404, h); res.end(JSON.stringify({ error: 'Not found' }));
+
 }).listen(process.env.PORT || 3000, () => console.log('Gopher proxy running'));
