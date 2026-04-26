@@ -12,232 +12,191 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
   <style>
-    /* ── Themes ── */
     :root {
-      --bg: #f5f5f0; --surface: #ffffff; --border: #d0d0c8; --accent: #007a3d;
-      --accent2: #0066aa; --text: #1a1a1a; --muted: #888880; --danger: #cc2233;
-      --dir-color: #0066aa; --txt-color: #1a1a1a; --search-color: #b36000;
-      --img-color: #6644bb; --info-color: #999990; --log-bg: #f9f9f6;
-      --safe-top: env(safe-area-inset-top,0px); --safe-bottom: env(safe-area-inset-bottom,0px);
-      --font: 'IBM Plex Mono', monospace;
+      --bg:#f5f5f0;--surface:#fff;--border:#d0d0c8;--accent:#007a3d;
+      --accent2:#0066aa;--text:#1a1a1a;--muted:#888880;--danger:#cc2233;
+      --dir-color:#0066aa;--txt-color:#1a1a1a;--search-color:#b36000;
+      --img-color:#6644bb;--info-color:#999990;
+      --safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px);
+      --font:'IBM Plex Mono',monospace;
     }
-    [data-theme="dark"] {
-      --bg: #0a0a0a; --surface: #111; --border: #222; --accent: #00cc66;
-      --accent2: #00aaff; --text: #e8e8e8; --muted: #555; --danger: #ff4455;
-      --dir-color: #00aaff; --txt-color: #e8e8e8; --search-color: #ffaa00;
-      --img-color: #bb88ff; --info-color: #444; --log-bg: #0d0d0d;
-    }
-    [data-theme="amber"] {
-      --bg: #1a1200; --surface: #221900; --border: #3a2c00; --accent: #ffaa00;
-      --accent2: #ffcc44; --text: #ffdd88; --muted: #886600; --danger: #ff4422;
-      --dir-color: #ffcc44; --txt-color: #ffdd88; --search-color: #ff8800;
-      --img-color: #ffaa44; --info-color: #664400; --log-bg: #160f00;
-    }
-    [data-theme="green"] {
-      --bg: #001a00; --surface: #002200; --border: #003300; --accent: #00ff44;
-      --accent2: #44ffaa; --text: #88ff88; --muted: #336633; --danger: #ff4422;
-      --dir-color: #44ffaa; --txt-color: #88ff88; --search-color: #aaff00;
-      --img-color: #00ffcc; --info-color: #225522; --log-bg: #001500;
-    }
+    [data-theme="dark"]{--bg:#0a0a0a;--surface:#111;--border:#222;--accent:#00cc66;--accent2:#00aaff;--text:#e8e8e8;--muted:#555;--danger:#ff4455;--dir-color:#00aaff;--txt-color:#e8e8e8;--search-color:#ffaa00;--img-color:#bb88ff;--info-color:#444;}
+    [data-theme="amber"]{--bg:#1a1200;--surface:#221900;--border:#3a2c00;--accent:#ffaa00;--accent2:#ffcc44;--text:#ffdd88;--muted:#886600;--danger:#ff4422;--dir-color:#ffcc44;--txt-color:#ffdd88;--search-color:#ff8800;--img-color:#ffaa44;--info-color:#664400;}
+    [data-theme="green"]{--bg:#001a00;--surface:#002200;--border:#003300;--accent:#00ff44;--accent2:#44ffaa;--text:#88ff88;--muted:#336633;--danger:#ff4422;--dir-color:#44ffaa;--txt-color:#88ff88;--search-color:#aaff00;--img-color:#00ffcc;--info-color:#225522;}
 
-    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-    html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--font); overflow: hidden; }
-    #app { display: flex; flex-direction: column; height: 100dvh; padding-top: var(--safe-top); padding-bottom: var(--safe-bottom); }
+    *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+    html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font);overflow:hidden;}
+    #app{display:flex;flex-direction:column;height:100dvh;padding-top:var(--safe-top);padding-bottom:var(--safe-bottom);}
 
     /* Header */
-    #header { background: var(--bg); border-bottom: 1px solid var(--border); padding: 8px 12px; flex-shrink: 0; }
-    #toolbar { display: flex; align-items: center; gap: 5px; margin-bottom: 8px; }
-    .icon-btn {
-      background: none; border: 1px solid var(--border); color: var(--text);
-      font-family: var(--font); font-size: 15px; width: 34px; height: 34px;
-      border-radius: 8px; display: flex; align-items: center; justify-content: center;
-      cursor: pointer; flex-shrink: 0; transition: border-color 0.15s, color 0.15s;
-    }
-    .icon-btn:active { background: var(--surface); }
-    .icon-btn:disabled { opacity: 0.3; }
-    .icon-btn.active { border-color: var(--accent); color: var(--accent); }
-    #title-bar { flex: 1; text-align: center; font-size: 11px; color: var(--muted); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; padding: 0 2px; }
-    #address-row { display: flex; gap: 6px; align-items: center; margin-bottom: 6px; }
-    #address-input {
-      flex: 1; background: var(--surface); border: 1px solid var(--border); color: var(--text);
-      font-family: var(--font); font-size: 13px; padding: 7px 10px; border-radius: 8px; outline: none; transition: border-color 0.15s;
-    }
-    #address-input:focus { border-color: var(--accent); }
-    #address-input::placeholder { color: var(--muted); }
-    #go-btn { background: var(--accent); color: var(--bg); border: none; font-family: var(--font); font-size: 13px; font-weight: 600; padding: 7px 14px; border-radius: 8px; cursor: pointer; flex-shrink: 0; }
-    #go-btn:active { opacity: 0.8; }
-    #veronica-bar { display: flex; gap: 6px; align-items: center; }
-    #veronica-input {
-      flex: 1; background: var(--surface); border: 1px solid var(--border); color: var(--text);
-      font-family: var(--font); font-size: 13px; padding: 7px 10px; border-radius: 8px; outline: none; transition: border-color 0.15s;
-    }
-    #veronica-input:focus { border-color: var(--search-color); }
-    #veronica-input::placeholder { color: var(--muted); }
-    #veronica-btn { background: var(--search-color); color: var(--bg); border: none; font-family: var(--font); font-size: 12px; font-weight: 600; padding: 7px 12px; border-radius: 8px; cursor: pointer; flex-shrink: 0; }
+    #header{background:var(--bg);border-bottom:1px solid var(--border);padding:8px 12px;flex-shrink:0;}
+    #toolbar{display:flex;align-items:center;gap:5px;margin-bottom:8px;}
+    .icon-btn{background:none;border:1px solid var(--border);color:var(--text);font-family:var(--font);font-size:15px;width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:border-color .15s,color .15s;}
+    .icon-btn:active{background:var(--surface);}
+    .icon-btn:disabled{opacity:.3;}
+    .icon-btn.active{border-color:var(--accent);color:var(--accent);}
+    #title-bar{flex:1;text-align:center;font-size:11px;color:var(--muted);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;padding:0 2px;}
+    #address-row{display:flex;gap:6px;align-items:center;margin-bottom:6px;}
+    #address-input{flex:1;background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:var(--font);font-size:13px;padding:7px 10px;border-radius:8px;outline:none;transition:border-color .15s;}
+    #address-input:focus{border-color:var(--accent);}
+    #address-input::placeholder{color:var(--muted);}
+    #go-btn{background:var(--accent);color:var(--bg);border:none;font-family:var(--font);font-size:13px;font-weight:600;padding:7px 14px;border-radius:8px;cursor:pointer;flex-shrink:0;}
+    #go-btn:active{opacity:.8;}
+    #veronica-bar{display:flex;gap:6px;align-items:center;}
+    #veronica-input{flex:1;background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:var(--font);font-size:13px;padding:7px 10px;border-radius:8px;outline:none;transition:border-color .15s;}
+    #veronica-input:focus{border-color:var(--search-color);}
+    #veronica-input::placeholder{color:var(--muted);}
+    #veronica-btn{background:var(--search-color);color:#fff;border:none;font-family:var(--font);font-size:12px;font-weight:600;padding:7px 12px;border-radius:8px;cursor:pointer;flex-shrink:0;}
 
     /* Content */
-    #content { flex: 1; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+    #content{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;}
 
     /* Loading */
-    #loading { display: none; flex-direction: column; align-items: center; justify-content: center; height: 100%; gap: 16px; }
-    #loading.visible { display: flex; }
-    .spinner { width: 32px; height: 32px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    #loading p { font-size: 12px; color: var(--muted); animation: pulse 1.5s ease-in-out infinite; }
-    @keyframes pulse { 0%,100%{opacity:0.4} 50%{opacity:1} }
+    #loading{display:none;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:16px;}
+    #loading.visible{display:flex;}
+    .spinner{width:32px;height:32px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;}
+    @keyframes spin{to{transform:rotate(360deg);}}
+    #loading p{font-size:12px;color:var(--muted);animation:pulse 1.5s ease-in-out infinite;}
+    @keyframes pulse{0%,100%{opacity:.4}50%{opacity:1}}
 
     /* Home */
-    #home-view { display: none; padding: 20px 16px; }
-    #home-view.visible { display: block; }
-    .home-section { margin-bottom: 24px; }
-    .home-section h2 { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
-    .home-server { display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 8px; cursor: pointer; transition: border-color 0.15s; }
-    .home-server:active { border-color: var(--accent); }
-    .home-server-icon { font-size: 18px; flex-shrink: 0; }
-    .home-server-body { flex: 1; min-width: 0; }
-    .home-server-name { font-size: 14px; font-weight: 500; }
-    .home-server-host { font-size: 11px; color: var(--muted); margin-top: 2px; }
-    .home-server-arrow { color: var(--muted); font-size: 14px; }
+    #home-view{display:none;padding:20px 16px;}
+    #home-view.visible{display:block;}
+    .home-section{margin-bottom:24px;}
+    .home-section h2{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border);}
+    .home-server{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;margin-bottom:8px;cursor:pointer;transition:border-color .15s;}
+    .home-server:active{border-color:var(--accent);}
+    .home-server-icon{font-size:18px;flex-shrink:0;}
+    .home-server-body{flex:1;min-width:0;}
+    .home-server-name{font-size:14px;font-weight:500;}
+    .home-server-host{font-size:11px;color:var(--muted);margin-top:2px;}
+    .home-server-arrow{color:var(--muted);font-size:14px;}
 
     /* Menu */
-    #menu-view { display: none; }
-    #menu-view.visible { display: block; }
-    .gopher-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 14px; border-bottom: 1px solid var(--border); cursor: default; transition: background 0.1s; }
-    .gopher-item.navigable { cursor: pointer; }
-    .gopher-item.navigable:active { background: var(--surface); }
-    .item-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; width: 18px; text-align: center; }
-    .item-body { flex: 1; min-width: 0; }
-    .item-text { font-size: 14px; line-height: 1.4; overflow: hidden; text-overflow: ellipsis; }
-    .item-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
-    .item-arrow { font-size: 12px; color: var(--muted); flex-shrink: 0; margin-top: 2px; }
-    .type-dir    .item-text { color: var(--dir-color); }
-    .type-text   .item-text { color: var(--txt-color); }
-    .type-search .item-text { color: var(--search-color); }
-    .type-image  .item-text { color: var(--img-color); }
-    .type-info   .item-text { color: var(--info-color); font-size: 12px; }
-    .type-error  .item-text { color: var(--danger); }
-    .type-html   .item-text { color: var(--accent); }
+    #menu-view{display:none;}
+    #menu-view.visible{display:block;}
+    .gopher-item{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border);cursor:default;transition:background .1s;}
+    .gopher-item.navigable{cursor:pointer;}
+    .gopher-item.navigable:active{background:var(--surface);}
+    .item-icon{font-size:14px;flex-shrink:0;margin-top:1px;width:18px;text-align:center;}
+    .item-body{flex:1;min-width:0;}
+    .item-text{font-size:14px;line-height:1.4;overflow:hidden;text-overflow:ellipsis;}
+    .item-meta{font-size:11px;color:var(--muted);margin-top:2px;}
+    .item-arrow{font-size:12px;color:var(--muted);flex-shrink:0;margin-top:2px;}
+    .type-dir .item-text{color:var(--dir-color);}
+    .type-text .item-text{color:var(--txt-color);}
+    .type-search .item-text{color:var(--search-color);}
+    .type-image .item-text{color:var(--img-color);}
+    .type-info .item-text{color:var(--info-color);font-size:12px;}
+    .type-error .item-text{color:var(--danger);}
+    .type-html .item-text{color:var(--accent);}
 
     /* Text */
-    #text-view { display: none; padding: 16px; }
-    #text-view.visible { display: block; }
-    #text-content { font-size: 13px; line-height: 1.6; white-space: pre-wrap; word-break: break-word; color: var(--text); }
+    #text-view{display:none;padding:16px;}
+    #text-view.visible{display:block;}
+    #text-content{font-size:13px;line-height:1.6;white-space:pre-wrap;word-break:break-word;color:var(--text);}
 
-    /* Raw view */
-    #raw-view { display: none; padding: 16px; }
-    #raw-view.visible { display: block; }
-    #raw-content {
-      font-size: 12px; line-height: 1.5; white-space: pre-wrap; word-break: break-all;
-      color: var(--accent); background: var(--surface); border: 1px solid var(--border);
-      border-radius: 8px; padding: 12px;
-    }
-    .raw-legend { font-size: 11px; color: var(--muted); margin-bottom: 10px; line-height: 1.8; }
-    .raw-legend span { display: inline-block; margin-right: 12px; }
+    /* Raw */
+    #raw-view{display:none;padding:16px;}
+    #raw-view.visible{display:block;}
+    .raw-legend{font-size:11px;color:var(--muted);margin-bottom:10px;line-height:2;}
+    .raw-legend span{display:inline-block;margin-right:10px;}
+    #raw-content{font-size:12px;line-height:1.5;white-space:pre-wrap;word-break:break-all;color:var(--accent);background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px;}
 
-    /* Image view */
-    #image-view { display: none; flex-direction: column; align-items: center; padding: 20px; gap: 12px; }
-    #image-view.visible { display: flex; }
-    #image-view img { max-width: 100%; border-radius: 8px; border: 1px solid var(--border); }
-    #image-title { font-size: 12px; color: var(--muted); }
+    /* Image */
+    #image-view{display:none;flex-direction:column;align-items:center;padding:20px;gap:12px;}
+    #image-view.visible{display:flex;}
+    #image-view img{max-width:100%;border-radius:8px;border:1px solid var(--border);}
 
     /* Error */
-    #error-view { display: none; flex-direction: column; align-items: center; justify-content: center; height: 100%; gap: 12px; padding: 32px; text-align: center; }
-    #error-view.visible { display: flex; }
-    #error-icon { font-size: 48px; }
-    #error-title { font-size: 16px; font-weight: 600; color: var(--danger); }
-    #error-msg { font-size: 12px; color: var(--muted); line-height: 1.5; }
-    #retry-btn { margin-top: 8px; background: none; border: 1px solid var(--accent); color: var(--text); font-family: var(--font); font-size: 13px; padding: 8px 20px; border-radius: 8px; cursor: pointer; }
+    #error-view{display:none;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:12px;padding:32px;text-align:center;}
+    #error-view.visible{display:flex;}
+    #error-icon{font-size:48px;}
+    #error-title{font-size:16px;font-weight:600;color:var(--danger);}
+    #error-msg{font-size:12px;color:var(--muted);line-height:1.5;}
+    #retry-btn{margin-top:8px;background:none;border:1px solid var(--accent);color:var(--text);font-family:var(--font);font-size:13px;padding:8px 20px;border-radius:8px;cursor:pointer;}
 
     /* Bookmarks sheet */
-    #bm-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; align-items: flex-end; }
-    #bm-overlay.visible { display: flex; }
-    #bm-sheet { background: var(--surface); border-top: 1px solid var(--border); border-radius: 16px 16px 0 0; width: 100%; max-height: 70dvh; display: flex; flex-direction: column; padding-bottom: var(--safe-bottom); }
-    #bm-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 16px 12px; border-bottom: 1px solid var(--border); }
-    #bm-header h2 { font-size: 15px; font-weight: 600; }
-    #bm-close { background: none; border: none; color: var(--muted); font-size: 20px; cursor: pointer; font-family: var(--font); }
-    #bm-list { overflow-y: auto; flex: 1; }
-    .bm-item { display: flex; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--border); gap: 10px; cursor: pointer; }
-    .bm-item:active { background: var(--bg); }
-    .bm-url { flex: 1; font-size: 13px; color: var(--accent2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .bm-delete { background: none; border: none; color: var(--danger); font-size: 18px; cursor: pointer; padding: 4px; font-family: var(--font); }
-    #bm-empty { padding: 40px; text-align: center; color: var(--muted); font-size: 13px; line-height: 1.8; }
+    #bm-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;align-items:flex-end;}
+    #bm-overlay.visible{display:flex;}
+    #bm-sheet{background:var(--surface);border-top:1px solid var(--border);border-radius:16px 16px 0 0;width:100%;max-height:70dvh;display:flex;flex-direction:column;padding-bottom:var(--safe-bottom);}
+    #bm-header{display:flex;align-items:center;justify-content:space-between;padding:16px 16px 12px;border-bottom:1px solid var(--border);}
+    #bm-header h2{font-size:15px;font-weight:600;}
+    #bm-close{background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;font-family:var(--font);}
+    #bm-list{overflow-y:auto;flex:1;}
+    .bm-item{display:flex;align-items:center;padding:12px 16px;border-bottom:1px solid var(--border);gap:10px;cursor:pointer;}
+    .bm-item:active{background:var(--bg);}
+    .bm-url{flex:1;font-size:13px;color:var(--accent2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .bm-delete{background:none;border:none;color:var(--danger);font-size:18px;cursor:pointer;padding:4px;font-family:var(--font);}
+    #bm-empty{padding:40px;text-align:center;color:var(--muted);font-size:13px;line-height:1.8;}
 
     /* Search dialog */
-    #search-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200; align-items: center; justify-content: center; padding: 24px; }
-    #search-overlay.visible { display: flex; }
-    #search-box { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; width: 100%; max-width: 340px; }
-    #search-box h3 { font-size: 14px; margin-bottom: 6px; color: var(--search-color); }
-    #search-server-label { font-size: 11px; color: var(--muted); margin-bottom: 10px; }
-    #search-input { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--text); font-family: var(--font); font-size: 14px; padding: 10px; border-radius: 8px; outline: none; margin-bottom: 12px; }
-    #search-input:focus { border-color: var(--search-color); }
-    .search-btns { display: flex; gap: 8px; justify-content: flex-end; }
-    .search-btns button { font-family: var(--font); font-size: 13px; padding: 8px 16px; border-radius: 8px; cursor: pointer; }
-    #search-cancel { background: none; border: 1px solid var(--border); color: var(--muted); }
-    #search-go { background: var(--search-color); border: none; color: var(--bg); font-weight: 600; }
+    #search-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;align-items:center;justify-content:center;padding:24px;}
+    #search-overlay.visible{display:flex;}
+    #search-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;width:100%;max-width:340px;}
+    #search-box h3{font-size:14px;margin-bottom:6px;color:var(--search-color);}
+    #search-server-label{font-size:11px;color:var(--muted);margin-bottom:10px;}
+    #search-input{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--font);font-size:14px;padding:10px;border-radius:8px;outline:none;margin-bottom:12px;}
+    #search-input:focus{border-color:var(--search-color);}
+    .search-btns{display:flex;gap:8px;justify-content:flex-end;}
+    .search-btns button{font-family:var(--font);font-size:13px;padding:8px 16px;border-radius:8px;cursor:pointer;}
+    #search-cancel{background:none;border:1px solid var(--border);color:var(--muted);}
+    #search-go{background:var(--search-color);border:none;color:#fff;font-weight:600;}
 
-    /* Theme picker sheet */
-    #theme-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; align-items: flex-end; }
-    #theme-overlay.visible { display: flex; }
-    #theme-sheet { background: var(--surface); border-top: 1px solid var(--border); border-radius: 16px 16px 0 0; width: 100%; padding: 20px 16px calc(20px + var(--safe-bottom)); }
-    #theme-sheet h2 { font-size: 15px; font-weight: 600; margin-bottom: 16px; }
-    .theme-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .theme-opt {
-      padding: 14px 12px; border-radius: 10px; border: 2px solid transparent;
-      cursor: pointer; text-align: center; font-family: var(--font); font-size: 13px; font-weight: 500;
-      transition: border-color 0.15s;
-    }
-    .theme-opt.selected { border-color: var(--accent); }
-    .theme-opt[data-theme-name="light"]  { background: #f5f5f0; color: #1a1a1a; border-color: #d0d0c8; }
-    .theme-opt[data-theme-name="dark"]   { background: #0a0a0a; color: #e8e8e8; border-color: #222; }
-    .theme-opt[data-theme-name="amber"]  { background: #1a1200; color: #ffdd88; border-color: #3a2c00; }
-    .theme-opt[data-theme-name="green"]  { background: #001a00; color: #88ff88; border-color: #003300; }
-    .theme-opt.selected[data-theme-name="light"]  { border-color: #007a3d; }
-    .theme-opt.selected[data-theme-name="dark"]   { border-color: #00cc66; }
-    .theme-opt.selected[data-theme-name="amber"]  { border-color: #ffaa00; }
-    .theme-opt.selected[data-theme-name="green"]  { border-color: #00ff44; }
-    #theme-close-btn { margin-top: 16px; width: 100%; padding: 10px; background: none; border: 1px solid var(--border); color: var(--muted); font-family: var(--font); font-size: 13px; border-radius: 8px; cursor: pointer; }
+    /* Theme picker */
+    #theme-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;align-items:flex-end;}
+    #theme-overlay.visible{display:flex;}
+    #theme-sheet{background:var(--surface);border-top:1px solid var(--border);border-radius:16px 16px 0 0;width:100%;padding:20px 16px calc(20px + var(--safe-bottom));}
+    #theme-sheet h2{font-size:15px;font-weight:600;margin-bottom:16px;}
+    .theme-options{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+    .theme-opt{padding:14px 12px;border-radius:10px;border:2px solid transparent;cursor:pointer;text-align:center;font-family:var(--font);font-size:13px;font-weight:500;}
+    .theme-opt[data-t="light"]{background:#f5f5f0;color:#1a1a1a;border-color:#d0d0c8;}
+    .theme-opt[data-t="dark"]{background:#0a0a0a;color:#e8e8e8;border-color:#222;}
+    .theme-opt[data-t="amber"]{background:#1a1200;color:#ffdd88;border-color:#3a2c00;}
+    .theme-opt[data-t="green"]{background:#001a00;color:#88ff88;border-color:#003300;}
+    .theme-opt.selected{outline:2px solid var(--accent);outline-offset:2px;}
+    #theme-done{margin-top:16px;width:100%;padding:10px;background:none;border:1px solid var(--border);color:var(--muted);font-family:var(--font);font-size:13px;border-radius:8px;cursor:pointer;}
 
-    /* Connection log panel */
-    #log-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; align-items: flex-end; }
-    #log-overlay.visible { display: flex; }
-    #log-sheet { background: var(--log-bg); border-top: 1px solid var(--border); border-radius: 16px 16px 0 0; width: 100%; max-height: 65dvh; display: flex; flex-direction: column; padding-bottom: var(--safe-bottom); }
-    #log-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 12px; border-bottom: 1px solid var(--border); }
-    #log-header h2 { font-size: 15px; font-weight: 600; }
-    #log-header-right { display: flex; gap: 8px; align-items: center; }
-    #log-clear { background: none; border: none; color: var(--danger); font-family: var(--font); font-size: 12px; cursor: pointer; }
-    #log-close { background: none; border: none; color: var(--muted); font-size: 20px; cursor: pointer; font-family: var(--font); }
-    #log-list { overflow-y: auto; flex: 1; padding: 8px 0; }
-    .log-entry { padding: 8px 16px; border-bottom: 1px solid var(--border); }
-    .log-entry:last-child { border-bottom: none; }
-    .log-time { font-size: 10px; color: var(--muted); }
-    .log-host { font-size: 12px; color: var(--accent2); margin: 2px 0; }
-    .log-sel  { font-size: 11px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .log-status { font-size: 10px; margin-top: 3px; }
-    .log-status.ok  { color: var(--accent); }
-    .log-status.err { color: var(--danger); }
-    #log-empty { padding: 40px; text-align: center; color: var(--muted); font-size: 13px; }
+    /* Log panel */
+    #log-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;align-items:flex-end;}
+    #log-overlay.visible{display:flex;}
+    #log-sheet{background:var(--surface);border-top:1px solid var(--border);border-radius:16px 16px 0 0;width:100%;max-height:65dvh;display:flex;flex-direction:column;padding-bottom:var(--safe-bottom);}
+    #log-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 12px;border-bottom:1px solid var(--border);}
+    #log-header h2{font-size:15px;font-weight:600;}
+    #log-hr{display:flex;gap:8px;align-items:center;}
+    #log-clear{background:none;border:none;color:var(--danger);font-family:var(--font);font-size:12px;cursor:pointer;}
+    #log-close{background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;font-family:var(--font);}
+    #log-list{overflow-y:auto;flex:1;padding:4px 0;}
+    .log-entry{padding:8px 16px;border-bottom:1px solid var(--border);}
+    .log-time{font-size:10px;color:var(--muted);}
+    .log-host{font-size:12px;color:var(--accent2);margin:2px 0;}
+    .log-sel{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .log-status{font-size:10px;margin-top:3px;}
+    .log-ok{color:var(--accent);}
+    .log-err{color:var(--danger);}
+    #log-empty{padding:40px;text-align:center;color:var(--muted);font-size:13px;}
 
     /* Font controls */
-    #text-controls { display: none; position: fixed; bottom: calc(16px + var(--safe-bottom)); right: 16px; flex-direction: column; gap: 4px; z-index: 50; }
-    #text-controls.visible { display: flex; }
-    .size-btn { background: var(--surface); border: 1px solid var(--border); color: var(--text); font-family: var(--font); font-size: 16px; width: 36px; height: 36px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    #text-controls{display:none;position:fixed;bottom:calc(16px + var(--safe-bottom));right:16px;flex-direction:column;gap:4px;z-index:50;}
+    #text-controls.visible{display:flex;}
+    .size-btn{background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:var(--font);font-size:16px;width:36px;height:36px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 
-    body::after { content: ''; position: fixed; inset: 0; background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.012) 2px, rgba(0,0,0,0.012) 4px); pointer-events: none; z-index: 9999; }
+    body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.012) 2px,rgba(0,0,0,.012) 4px);pointer-events:none;z-index:9999;}
   </style>
 </head>
 <body>
 <div id="app">
   <div id="header">
     <div id="toolbar">
-      <button class="icon-btn" id="back-btn"    disabled>←</button>
-      <button class="icon-btn" id="forward-btn" disabled>→</button>
+      <button class="icon-btn" id="back-btn" disabled>←</button>
+      <button class="icon-btn" id="fwd-btn" disabled>→</button>
       <button class="icon-btn" id="home-btn">⌂</button>
       <button class="icon-btn" id="reload-btn">↺</button>
       <div id="title-bar">Gopherspace</div>
       <button class="icon-btn" id="star-btn">☆</button>
-      <button class="icon-btn" id="raw-btn" title="Raw view">&lt;/&gt;</button>
-      <button class="icon-btn" id="log-btn" title="Connection Log">▤</button>
-      <button class="icon-btn" id="theme-btn" title="Themes">◑</button>
+      <button class="icon-btn" id="raw-btn" title="Raw">&lt;/&gt;</button>
+      <button class="icon-btn" id="log-btn" title="Log">▤</button>
+      <button class="icon-btn" id="theme-btn" title="Theme">◑</button>
       <button class="icon-btn" id="bm-btn" title="Bookmarks">≡</button>
     </div>
     <div id="address-row">
@@ -257,8 +216,14 @@
     <div id="home-view"></div>
     <div id="menu-view"></div>
     <div id="text-view"><pre id="text-content"></pre></div>
-    <div id="image-view"><div id="image-title"></div></div>
-    <div id="raw-view"><div class="raw-legend"><span>0=text</span><span>1=dir</span><span>7=search</span><span>i=info</span><span>g/I=image</span><span>9=binary</span><span>·=tab</span></div><pre id="raw-content"></pre></div>
+    <div id="raw-view">
+      <div class="raw-legend">
+        <span>0=text</span><span>1=dir</span><span>7=search</span><span>i=info</span>
+        <span>g/I=image</span><span>9=bin</span><span>·=tab</span>
+      </div>
+      <pre id="raw-content"></pre>
+    </div>
+    <div id="image-view"></div>
     <div id="error-view">
       <div id="error-icon">⚠</div>
       <div id="error-title">Connection Error</div>
@@ -281,7 +246,7 @@
   </div>
 </div>
 
-<!-- Search dialog -->
+<!-- Search -->
 <div id="search-overlay">
   <div id="search-box">
     <h3>🔍 Gopher Search</h3>
@@ -294,26 +259,26 @@
   </div>
 </div>
 
-<!-- Theme picker -->
+<!-- Theme -->
 <div id="theme-overlay">
   <div id="theme-sheet">
     <h2>Choose Theme</h2>
     <div class="theme-options">
-      <div class="theme-opt" data-theme-name="light">☀ Light</div>
-      <div class="theme-opt" data-theme-name="dark">🌙 Dark</div>
-      <div class="theme-opt" data-theme-name="amber">🟡 Amber</div>
-      <div class="theme-opt" data-theme-name="green">🟢 Phosphor</div>
+      <div class="theme-opt" data-t="light">☀ Light</div>
+      <div class="theme-opt" data-t="dark">🌙 Dark</div>
+      <div class="theme-opt" data-t="amber">🟡 Amber</div>
+      <div class="theme-opt" data-t="green">🟢 Phosphor</div>
     </div>
-    <button id="theme-close-btn">Done</button>
+    <button id="theme-done">Done</button>
   </div>
 </div>
 
-<!-- Connection log -->
+<!-- Log -->
 <div id="log-overlay">
   <div id="log-sheet">
     <div id="log-header">
       <h2>Connection Log</h2>
-      <div id="log-header-right">
+      <div id="log-hr">
         <button id="log-clear">Clear</button>
         <button id="log-close">✕</button>
       </div>
@@ -326,73 +291,54 @@
 const PROXY_URL = 'https://gopher-7oxz.onrender.com';
 
 // ── Theme ──
-const THEME_COLORS = { light: '#f5f5f0', dark: '#0a0a0a', amber: '#1a1200', green: '#001a00' };
-let currentTheme = localStorage.getItem('gopher_theme') || 'light';
+const THEME_META = {light:'#f5f5f0',dark:'#0a0a0a',amber:'#1a1200',green:'#001a00'};
+let theme = localStorage.getItem('gopher_theme') || 'light';
 function applyTheme(t) {
-  currentTheme = t;
+  theme = t;
   document.documentElement.dataset.theme = t === 'light' ? '' : t;
-  document.getElementById('theme-color-meta').content = THEME_COLORS[t];
+  document.getElementById('theme-color-meta').content = THEME_META[t];
   localStorage.setItem('gopher_theme', t);
-  document.querySelectorAll('.theme-opt').forEach(el => {
-    el.classList.toggle('selected', el.dataset.themeName === t);
-  });
+  document.querySelectorAll('.theme-opt').forEach(el => el.classList.toggle('selected', el.dataset.t === t));
 }
-applyTheme(currentTheme);
+applyTheme(theme);
 
 // ── State ──
-let backHistory    = [];
-let forwardHistory = [];
-let current        = null;
-let onHomePage     = true;
-let bookmarks      = JSON.parse(localStorage.getItem('gopher_bookmarks') || '[]');
-let fontSize       = parseInt(localStorage.getItem('gopher_fontsize') || '13');
-let pendingSearch  = null;
-let rawMode        = false;
-let lastRaw        = '';
-let lastResult     = null;
-let connLog        = [];
-
-// ── DOM ──
 const $ = id => document.getElementById(id);
-const addressInput = $('address-input');
-const menuView     = $('menu-view');
-const homeView     = $('home-view');
-const textView     = $('text-view');
-const imageView    = $('image-view');
-const textContent  = $('text-content');
-const errorView    = $('error-view');
-const loading      = $('loading');
-const backBtn      = $('back-btn');
-const forwardBtn   = $('forward-btn');
-const starBtn      = $('star-btn');
+let backStack = [], fwdStack = [], current = null, onHome = true;
+let bookmarks = JSON.parse(localStorage.getItem('gopher_bookmarks') || '[]');
+let fontSize = parseInt(localStorage.getItem('gopher_fontsize') || '13');
+let pendingSearch = null;
+let connLog = [];
+let lastRaw = '', lastResult = null, rawMode = false;
 
 // ── Item types ──
 const TYPES = {
-  '0': { icon: '📄', color: 'type-text',   navigable: true  },
-  '1': { icon: '📁', color: 'type-dir',    navigable: true  },
-  '7': { icon: '🔍', color: 'type-search', navigable: true  },
-  'h': { icon: '🌐', color: 'type-html',   navigable: true  },
-  'i': { icon: '',   color: 'type-info',   navigable: false },
-  'g': { icon: '🖼', color: 'type-image',  navigable: true  },
-  'I': { icon: '🖼', color: 'type-image',  navigable: true  },
-  '9': { icon: '⬇', color: 'type-bin',    navigable: true  },
-  '4': { icon: '⬇', color: 'type-bin',    navigable: true  },
-  '5': { icon: '⬇', color: 'type-bin',    navigable: true  },
-  '6': { icon: '⬇', color: 'type-bin',    navigable: true  },
-  's': { icon: '🎵', color: 'type-sound',  navigable: true  },
-  '3': { icon: '⚠', color: 'type-error',  navigable: false },
+  '0':{icon:'📄',color:'type-text',nav:true},
+  '1':{icon:'📁',color:'type-dir',nav:true},
+  '7':{icon:'🔍',color:'type-search',nav:true},
+  'h':{icon:'🌐',color:'type-html',nav:true},
+  'i':{icon:'',color:'type-info',nav:false},
+  'g':{icon:'🖼',color:'type-image',nav:true},
+  'I':{icon:'🖼',color:'type-image',nav:true},
+  '9':{icon:'⬇',color:'type-bin',nav:true},
+  '4':{icon:'⬇',color:'type-bin',nav:true},
+  '5':{icon:'⬇',color:'type-bin',nav:true},
+  '6':{icon:'⬇',color:'type-bin',nav:true},
+  's':{icon:'🎵',color:'type-sound',nav:true},
+  '3':{icon:'⚠',color:'type-error',nav:false},
 };
-const typeInfo = t => TYPES[t] || { icon: '❓', color: '', navigable: false };
+const ti = t => TYPES[t] || {icon:'❓',color:'',nav:false};
 
-const HOME_SERVERS = [
-  // These are the most reliably online Gopher servers as of 2025-2026
-  { icon: '🌍', name: 'Floodgap Systems',       host: 'gopher.floodgap.com',  port: 70, selector: '' },
-  { icon: '📰', name: 'Hacker News (Gopher)',   host: 'hngopher.com',         port: 70, selector: '' },
-  { icon: '🐧', name: 'SDF Public Access',      host: 'sdf.org',              port: 70, selector: '' },
-  { icon: '📝', name: 'SDF Phlogosphere',       host: 'phlogosphere.org',     port: 70, selector: '' },
+// ── Home servers ──
+const SERVERS = [
+  {icon:'🌍',name:'Floodgap Systems',    host:'gopher.floodgap.com',port:70,sel:''},
+  {icon:'📰',name:'Hacker News (Gopher)',host:'hngopher.com',       port:70,sel:''},
+  {icon:'🐧',name:'SDF Public Access',   host:'sdf.org',            port:70,sel:''},
+  {icon:'📝',name:'SDF Phlogosphere',    host:'phlogosphere.org',   port:70,sel:''},
 ];
 
-// ── URL helpers ──
+// ── Helpers ──
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function parseURL(s) {
   s = s.trim();
   if (!s) return null;
@@ -401,380 +347,315 @@ function parseURL(s) {
     const u = new URL(s);
     let sel = u.pathname;
     if (sel.length >= 2 && '01234567ghIisT+'.includes(sel[1])) sel = '/' + sel.slice(2);
-    return { host: u.hostname, port: parseInt(u.port) || 70, selector: sel };
+    return {host:u.hostname, port:parseInt(u.port)||70, sel};
   } catch {
-    s = s.replace('gopher://', '');
+    s = s.replace('gopher://','');
     const si = s.indexOf('/');
-    const hp = si === -1 ? s : s.slice(0, si);
-    const sel = si === -1 ? '' : s.slice(si);
-    const [host, portStr] = hp.split(':');
-    return { host, port: parseInt(portStr) || 70, selector: sel };
+    const hp = si===-1?s:s.slice(0,si);
+    const sel = si===-1?'':s.slice(si);
+    const [host,ps] = hp.split(':');
+    return {host, port:parseInt(ps)||70, sel};
   }
 }
-function currentURL() {
-  if (!current) return '';
-  return `gopher://${current.host}:${current.port}${current.selector || '/'}`;
-}
+function curURL(){return current?`gopher://${current.host}:${current.port}${current.sel||'/'}`:'';}
 
-// ── Connection Log ──
-function logRequest(host, port, selector, status, ms) {
-  const now = new Date();
-  const timeStr = now.toLocaleTimeString();
-  connLog.unshift({ time: timeStr, host, port, selector, status, ms });
-  if (connLog.length > 100) connLog.pop();
+// ── Log ──
+function addLog(host,port,sel,status,ms){
+  connLog.unshift({time:new Date().toLocaleTimeString(),host,port,sel,status,ms});
+  if(connLog.length>100) connLog.pop();
 }
-function renderLog() {
-  const list = $('log-list');
-  if (!connLog.length) { list.innerHTML = '<div id="log-empty">No connections yet.</div>'; return; }
-  list.innerHTML = connLog.map(e => `
-    <div class="log-entry">
-      <div class="log-time">${e.time}</div>
-      <div class="log-host">${esc(e.host)}:${e.port}</div>
-      <div class="log-sel">${esc(e.selector || '/')}</div>
-      <div class="log-status ${e.status === 'ok' ? 'ok' : 'err'}">${e.status === 'ok' ? '✓ ' + e.ms + 'ms' : '✗ ' + esc(e.status)}</div>
-    </div>`).join('');
+function renderLog(){
+  const l=$('log-list');
+  if(!connLog.length){l.innerHTML='<div id="log-empty">No connections yet.</div>';return;}
+  l.innerHTML=connLog.map(e=>`<div class="log-entry">
+    <div class="log-time">${e.time}</div>
+    <div class="log-host">${esc(e.host)}:${e.port}</div>
+    <div class="log-sel">${esc(e.sel||'/')}</div>
+    <div class="log-status ${e.status==='ok'?'log-ok':'log-err'}">${e.status==='ok'?'✓ '+e.ms+'ms':'✗ '+esc(e.status)}</div>
+  </div>`).join('');
 }
 
 // ── Fetch ──
-async function gopherFetch(host, port, selector) {
-  const t0 = Date.now();
+async function gopherFetch(host,port,sel){
+  const t0=Date.now();
   try {
-    const params = new URLSearchParams({ host, port, selector });
-    const resp = await fetch(`${PROXY_URL}/gopher?${params}`);
-    if (!resp.ok) throw new Error(`Proxy error: ${resp.status}`);
-    const json = await resp.json();
-    logRequest(host, port, selector, 'ok', Date.now() - t0);
-    return json;
-  } catch (e) {
-    logRequest(host, port, selector, e.message, Date.now() - t0);
-    throw e;
-  }
-}
-
-// ── Navigation ──
-async function navigate(host, port, selector, title, type) {
-  if (current) backHistory.push({ ...current, onHomePage });
-  forwardHistory = [];
-  current = { host, port, selector, title: title || `${host}${selector}`, itemType: type };
-  onHomePage = false;
-  updateNavBtns(); updateAddress(); updateStar();
-
-  // Handle by item type
-  if (type === 'g' || type === 'I') { await loadImage(host, port, selector, title); return; }
-  if (type === '9' || type === '4' || type === '5' || type === '6') { triggerDownload(host, port, selector, title); return; }
-  if (type === 's') { triggerDownload(host, port, selector, title); return; }
-  await load();
-}
-
-async function goBack() {
-  if (!backHistory.length) return;
-  if (current) forwardHistory.push({ ...current, onHomePage });
-  const prev = backHistory.pop();
-  onHomePage = prev.onHomePage || false;
-  current = { host: prev.host, port: prev.port, selector: prev.selector, title: prev.title, itemType: prev.itemType };
-  updateNavBtns(); updateAddress(); updateStar();
-  if (onHomePage) { showHome(); return; }
-  if (prev.itemType === 'g' || prev.itemType === 'I') { await loadImage(current.host, current.port, current.selector, current.title); return; }
-  await load();
-}
-
-async function goForward() {
-  if (!forwardHistory.length) return;
-  if (current) backHistory.push({ ...current, onHomePage });
-  const next = forwardHistory.pop();
-  onHomePage = next.onHomePage || false;
-  current = { host: next.host, port: next.port, selector: next.selector, title: next.title, itemType: next.itemType };
-  updateNavBtns(); updateAddress(); updateStar();
-  if (onHomePage) { showHome(); return; }
-  if (next.itemType === 'g' || next.itemType === 'I') { await loadImage(current.host, current.port, current.selector, current.title); return; }
-  await load();
-}
-
-async function load() {
-  showLoading();
-  rawMode = false;
-  updateRawBtn();
-  try {
-    const result = await gopherFetch(current.host, current.port, current.selector);
-    lastRaw = result.raw || '';
-    lastResult = result;
-    if (result.type === 'menu') renderMenu(result.items);
-    else if (result.type === 'text') renderText(result.content);
-    else showError('Unknown response type');
-  } catch (e) { showError(e.message || 'Failed to connect'); }
-}
-
-// ── Image loading ──
-async function loadImage(host, port, selector, title) {
-  showLoading();
-  try {
-    const t0 = Date.now();
-    const params = new URLSearchParams({ host, port, selector });
-    const resp = await fetch(`${PROXY_URL}/image?${params}`);
-    if (!resp.ok) throw new Error('Image fetch failed');
-    const json = await resp.json();
-    logRequest(host, port, selector, 'ok', Date.now() - t0);
-    // Render image
-    imageView.innerHTML = `
-      <div id="image-title" style="font-size:12px;color:var(--muted);margin-bottom:8px;">${esc(title || selector)}</div>
-      <img src="data:${json.mime};base64,${json.data}" alt="${esc(title || '')}" style="max-width:100%;border-radius:8px;border:1px solid var(--border);">
-    `;
-    showView('image');
-  } catch (e) {
-    logRequest(host, port, selector, e.message, 0);
-    showError('Could not load image: ' + e.message);
-  }
-}
-
-// ── Binary download ──
-function triggerDownload(host, port, selector, title) {
-  const filename = selector.split('/').pop() || title || 'download';
-  const params = new URLSearchParams({ host, port, selector, filename });
-  const link = document.createElement('a');
-  link.href = `${PROXY_URL}/binary?${params}`;
-  link.download = filename;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  logRequest(host, port, selector, 'ok (download)', 0);
-  // Stay on current page but show a brief status
-  $('title-bar').textContent = '⬇ Downloading ' + filename;
-  setTimeout(() => updateAddress(), 2000);
-}
-
-// ── Home ──
-function showHome() {
-  onHomePage = true; current = null;
-  addressInput.value = ''; $('title-bar').textContent = 'Gopherspace';
-  updateNavBtns(); updateStar();
-  homeView.innerHTML = `
-    <div class="home-section">
-      <h2>Popular Servers</h2>
-      ${HOME_SERVERS.map((s, i) => `
-        <div class="home-server" data-idx="${i}">
-          <div class="home-server-icon">${s.icon}</div>
-          <div class="home-server-body">
-            <div class="home-server-name">${esc(s.name)}</div>
-            <div class="home-server-host">${esc(s.host)}</div>
-          </div>
-          <div class="home-server-arrow">›</div>
-        </div>`).join('')}
-    </div>
-    ${bookmarks.length ? `
-    <div class="home-section">
-      <h2>Bookmarks</h2>
-      ${bookmarks.map((url, i) => `
-        <div class="home-server" data-bm="${i}">
-          <div class="home-server-icon">★</div>
-          <div class="home-server-body"><div class="home-server-name" style="color:var(--accent2)">${esc(url)}</div></div>
-          <div class="home-server-arrow">›</div>
-        </div>`).join('')}
-    </div>` : ''}
-  `;
-  homeView.querySelectorAll('.home-server[data-idx]').forEach(el => {
-    el.addEventListener('click', () => { const s = HOME_SERVERS[parseInt(el.dataset.idx)]; navigate(s.host, s.port, s.selector, s.name, '1'); });
-  });
-  homeView.querySelectorAll('.home-server[data-bm]').forEach(el => {
-    el.addEventListener('click', () => { const url = bookmarks[parseInt(el.dataset.bm)]; const p = parseURL(url); if (p) navigate(p.host, p.port, p.selector, url); });
-  });
-  showView('home');
-}
-
-// ── Render menu ──
-function renderMenu(items) {
-  menuView.innerHTML = items.map(item => {
-    const info = typeInfo(item.type);
-    const isInfo = item.type === 'i';
-    if (isInfo && !item.text.trim()) return `<div class="gopher-item type-info" style="padding:3px 14px;border:none;"><div class="item-text"> </div></div>`;
-    return `<div class="gopher-item ${info.color} ${info.navigable ? 'navigable' : ''}"
-                 data-type="${esc(item.type)}" data-host="${esc(item.host)}" data-port="${item.port}"
-                 data-sel="${esc(item.selector)}" data-text="${esc(item.text)}">
-              ${isInfo ? '' : `<div class="item-icon">${info.icon}</div>`}
-              <div class="item-body">
-                <div class="item-text">${esc(item.text)}</div>
-                ${(!isInfo && item.host) ? `<div class="item-meta">${esc(item.host)}:${item.port}</div>` : ''}
-              </div>
-              ${info.navigable ? '<div class="item-arrow">›</div>' : ''}
-            </div>`;
-  }).join('');
-  showView('menu');
-  menuView.querySelectorAll('.navigable').forEach(el => {
-    el.addEventListener('click', () => {
-      const { type, host, port, sel: selector, text } = el.dataset;
-      if (type === '7') openSearch(host, parseInt(port), selector, text);
-      else navigate(host, parseInt(port), selector, text, type);
-    });
-  });
-}
-
-// ── Render text ──
-function renderText(text) {
-  textContent.textContent = text;
-  textContent.style.fontSize = fontSize + 'px';
-  showView('text');
+    const r=await fetch(`${PROXY_URL}/gopher?`+new URLSearchParams({host,port,selector:sel}));
+    if(!r.ok) throw new Error('Proxy error: '+r.status);
+    const j=await r.json();
+    addLog(host,port,sel,'ok',Date.now()-t0);
+    return j;
+  } catch(e){addLog(host,port,sel,e.message,Date.now()-t0);throw e;}
 }
 
 // ── Views ──
-function showView(which) {
-  [loading, homeView, menuView, textView, imageView, $('raw-view'), errorView].forEach(v => v.classList.remove('visible'));
+const VIEWS = ['loading','home-view','menu-view','text-view','raw-view','image-view','error-view'];
+function showView(which){
+  VIEWS.forEach(v=>$(v).classList.remove('visible'));
   $('text-controls').classList.remove('visible');
-  if (which === 'raw')   $('raw-view').classList.add('visible');
-  if (which === 'home')  homeView.classList.add('visible');
-  if (which === 'menu')  menuView.classList.add('visible');
-  if (which === 'text')  { textView.classList.add('visible'); $('text-controls').classList.add('visible'); }
-  if (which === 'image') imageView.classList.add('visible');
-  if (which === 'error') errorView.classList.add('visible');
-  $('content').scrollTop = 0;
+  $(which).classList.add('visible');
+  if(which==='text-view') $('text-controls').classList.add('visible');
+  $('content').scrollTop=0;
 }
-function showLoading() {
-  [homeView, menuView, textView, imageView, $('raw-view'), errorView].forEach(v => v.classList.remove('visible'));
-  $('text-controls').classList.remove('visible');
-  loading.classList.add('visible');
-}
-function showError(msg) { $('error-msg').textContent = msg; showView('error'); }
+function showError(msg){$('error-msg').textContent=msg;showView('error-view');}
 
 // ── UI updates ──
-function updateAddress() {
-  addressInput.value = current ? currentURL() : '';
-  $('title-bar').textContent = current ? (current.title || currentURL()) : 'Gopherspace';
+function updateNav(){
+  $('back-btn').disabled=backStack.length===0;
+  $('fwd-btn').disabled=fwdStack.length===0;
 }
-function updateNavBtns() {
-  backBtn.disabled    = backHistory.length === 0;
-  forwardBtn.disabled = forwardHistory.length === 0;
+function updateAddr(){
+  $('address-input').value=current?curURL():'';
+  $('title-bar').textContent=current?(current.title||curURL()):'Gopherspace';
 }
-function updateStar() {
-  if (!current) { starBtn.textContent = '☆'; starBtn.classList.remove('active'); return; }
-  const has = bookmarks.includes(currentURL());
-  starBtn.textContent = has ? '★' : '☆';
-  starBtn.classList.toggle('active', has);
+function updateStar(){
+  const has=current&&bookmarks.includes(curURL());
+  $('star-btn').textContent=has?'★':'☆';
+  $('star-btn').classList.toggle('active',!!has);
 }
-function esc(s) {
-  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+function updateRaw(){$('raw-btn').classList.toggle('active',rawMode);}
+
+// ── Home ──
+function showHome(){
+  onHome=true; current=null; rawMode=false;
+  updateNav(); updateAddr(); updateStar(); updateRaw();
+  const bmHtml = bookmarks.length ? `
+    <div class="home-section">
+      <h2>Bookmarks</h2>
+      ${bookmarks.map((url,i)=>`<div class="home-server" data-bm="${i}">
+        <div class="home-server-icon">★</div>
+        <div class="home-server-body"><div class="home-server-name" style="color:var(--accent2)">${esc(url)}</div></div>
+        <div class="home-server-arrow">›</div>
+      </div>`).join('')}
+    </div>` : '';
+  $('home-view').innerHTML = `
+    <div class="home-section">
+      <h2>Popular Servers</h2>
+      ${SERVERS.map((s,i)=>`<div class="home-server" data-si="${i}">
+        <div class="home-server-icon">${s.icon}</div>
+        <div class="home-server-body">
+          <div class="home-server-name">${esc(s.name)}</div>
+          <div class="home-server-host">${esc(s.host)}</div>
+        </div>
+        <div class="home-server-arrow">›</div>
+      </div>`).join('')}
+    </div>${bmHtml}`;
+  $('home-view').querySelectorAll('[data-si]').forEach(el=>{
+    el.addEventListener('click',()=>{const s=SERVERS[+el.dataset.si];go(s.host,s.port,s.sel,s.name,'1');});
+  });
+  $('home-view').querySelectorAll('[data-bm]').forEach(el=>{
+    el.addEventListener('click',()=>{const p=parseURL(bookmarks[+el.dataset.bm]);if(p)go(p.host,p.port,p.sel,bookmarks[+el.dataset.bm]);});
+  });
+  showView('home-view');
 }
 
-// ── Bookmarks ──
-function toggleBookmark() {
-  if (!current) return;
-  const url = currentURL();
-  const idx = bookmarks.indexOf(url);
-  if (idx === -1) bookmarks.push(url); else bookmarks.splice(idx, 1);
-  localStorage.setItem('gopher_bookmarks', JSON.stringify(bookmarks));
-  updateStar();
+// ── Navigation ──
+async function go(host,port,sel,title,type){
+  if(current) backStack.push({...current,onHome:false});
+  fwdStack=[];
+  current={host,port,sel,title:title||`${host}${sel}`,type};
+  onHome=false; rawMode=false;
+  updateNav(); updateAddr(); updateStar(); updateRaw();
+  if(type==='g'||type==='I'){await loadImage(host,port,sel,title);return;}
+  if('9456s'.includes(type||'')){triggerDownload(host,port,sel,title);return;}
+  await load();
 }
-function renderBookmarks() {
-  const list = $('bm-list');
-  if (!bookmarks.length) { list.innerHTML = `<div id="bm-empty">No bookmarks yet.<br>Tap ☆ while browsing to save a location.</div>`; return; }
-  list.innerHTML = bookmarks.map((url, i) =>
-    `<div class="bm-item"><div class="bm-url" data-url="${esc(url)}">${esc(url)}</div><button class="bm-delete" data-idx="${i}">✕</button></div>`
-  ).join('');
-  list.querySelectorAll('.bm-url').forEach(el => {
-    el.addEventListener('click', () => { const p = parseURL(el.dataset.url); if (p) { closeBM(); navigate(p.host, p.port, p.selector, el.dataset.url); } });
-  });
-  list.querySelectorAll('.bm-delete').forEach(el => {
-    el.addEventListener('click', e => {
-      e.stopPropagation();
-      bookmarks.splice(parseInt(el.dataset.idx), 1);
-      localStorage.setItem('gopher_bookmarks', JSON.stringify(bookmarks));
-      updateStar(); renderBookmarks();
+
+async function goBack(){
+  if(!backStack.length) return;
+  if(current) fwdStack.push({...current,onHome});
+  const p=backStack.pop();
+  if(p.onHome){current=null;onHome=true;updateNav();updateAddr();updateStar();showHome();return;}
+  current={host:p.host,port:p.port,sel:p.sel,title:p.title,type:p.type};
+  onHome=false; rawMode=false;
+  updateNav(); updateAddr(); updateStar(); updateRaw();
+  if(p.type==='g'||p.type==='I'){await loadImage(p.host,p.port,p.sel,p.title);return;}
+  await load();
+}
+
+async function goFwd(){
+  if(!fwdStack.length) return;
+  if(current) backStack.push({...current,onHome});
+  const n=fwdStack.pop();
+  if(n.onHome){current=null;onHome=true;updateNav();updateAddr();updateStar();showHome();return;}
+  current={host:n.host,port:n.port,sel:n.sel,title:n.title,type:n.type};
+  onHome=false; rawMode=false;
+  updateNav(); updateAddr(); updateStar(); updateRaw();
+  if(n.type==='g'||n.type==='I'){await loadImage(n.host,n.port,n.sel,n.title);return;}
+  await load();
+}
+
+async function load(){
+  showView('loading');
+  try {
+    const r=await gopherFetch(current.host,current.port,current.sel);
+    lastRaw=r.raw||''; lastResult=r;
+    if(r.type==='menu') renderMenu(r.items);
+    else if(r.type==='text') renderText(r.content);
+    else showError('Unknown response');
+  } catch(e){showError(e.message||'Failed to connect');}
+}
+
+// ── Render ──
+function renderMenu(items){
+  $('menu-view').innerHTML=items.map(item=>{
+    const info=ti(item.type), isInfo=item.type==='i';
+    if(isInfo&&!item.text.trim()) return `<div class="gopher-item type-info" style="padding:3px 14px;border:none;"><div class="item-text"> </div></div>`;
+    return `<div class="gopher-item ${info.color} ${info.nav?'navigable':''}"
+      data-type="${esc(item.type)}" data-host="${esc(item.host)}" data-port="${item.port}"
+      data-sel="${esc(item.selector)}" data-text="${esc(item.text)}">
+      ${isInfo?'':`<div class="item-icon">${info.icon}</div>`}
+      <div class="item-body">
+        <div class="item-text">${esc(item.text)}</div>
+        ${(!isInfo&&item.host)?`<div class="item-meta">${esc(item.host)}:${item.port}</div>`:''}
+      </div>
+      ${info.nav?'<div class="item-arrow">›</div>':''}
+    </div>`;
+  }).join('');
+  showView('menu-view');
+  $('menu-view').querySelectorAll('.navigable').forEach(el=>{
+    el.addEventListener('click',()=>{
+      const {type,host,port,sel,text}=el.dataset;
+      if(type==='7') openSearch(host,+port,sel,text);
+      else go(host,+port,sel,text,type);
     });
   });
 }
-function openBM()  { renderBookmarks(); $('bm-overlay').classList.add('visible'); }
-function closeBM() { $('bm-overlay').classList.remove('visible'); }
 
-// ── Search ──
-function openSearch(host, port, selector, title) {
-  pendingSearch = { host, port, selector, title };
-  $('search-server-label').textContent = 'Server: ' + host;
-  $('search-input').value = '';
-  $('search-overlay').classList.add('visible');
-  setTimeout(() => $('search-input').focus(), 100);
+function renderText(text){
+  $('text-content').textContent=text;
+  $('text-content').style.fontSize=fontSize+'px';
+  showView('text-view');
 }
-function doSearch() {
-  const query = $('search-input').value.trim();
-  if (!query || !pendingSearch) return;
-  $('search-overlay').classList.remove('visible');
-  const { host, port, selector, title } = pendingSearch;
-  navigate(host, port, selector + '\t' + query, title + ': ' + query, '7');
+
+async function loadImage(host,port,sel,title){
+  showView('loading');
+  try {
+    const t0=Date.now();
+    const r=await fetch(`${PROXY_URL}/image?`+new URLSearchParams({host,port,selector:sel}));
+    if(!r.ok) throw new Error('Image error');
+    const j=await r.json();
+    addLog(host,port,sel,'ok',Date.now()-t0);
+    $('image-view').innerHTML=`
+      <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">${esc(title||sel)}</div>
+      <img src="data:${j.mime};base64,${j.data}" alt="${esc(title||'')}">`;
+    showView('image-view');
+  } catch(e){addLog(host,port,sel,e.message,0);showError('Could not load image: '+e.message);}
 }
-function doVeronicaSearch() {
-  const query = $('veronica-input').value.trim();
-  if (!query) return;
-  navigate('gopher.floodgap.com', 70, '/v2/vs\t' + query, 'Veronica: ' + query, '7');
-  $('veronica-input').value = '';
+
+function triggerDownload(host,port,sel,title){
+  const filename=sel.split('/').pop()||title||'download';
+  const a=document.createElement('a');
+  a.href=`${PROXY_URL}/binary?`+new URLSearchParams({host,port,selector:sel,filename});
+  a.download=filename; document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  addLog(host,port,sel,'ok (download)',0);
+  $('title-bar').textContent='⬇ '+filename;
+  setTimeout(updateAddr,2500);
 }
 
 // ── Raw mode ──
-function updateRawBtn() {
-  $('raw-btn').classList.toggle('active', rawMode);
-}
-
-function toggleRaw() {
-  if (onHomePage) return;
-  rawMode = !rawMode;
-  updateRawBtn();
-  if (rawMode) {
-    if (!lastRaw) { rawMode = false; updateRawBtn(); return; }
-    // Highlight tabs visually
-    const highlighted = lastRaw
-      .replace(/	/g, '·')
-      .replace(/
-/g, '');
-    $('raw-content').textContent = highlighted;
-    showView('raw');
+function toggleRaw(){
+  if(onHome||!lastResult) return;
+  rawMode=!rawMode; updateRaw();
+  if(rawMode){
+    $('raw-content').textContent=lastRaw.replace(/\t/g,'·').replace(/\r/g,'');
+    showView('raw-view');
   } else {
-    // Go back to normal view — re-render from cache instantly
-    if (lastResult) {
-      if (lastResult.type === 'menu') renderMenu(lastResult.items);
-      else if (lastResult.type === 'text') renderText(lastResult.content);
-    }
+    if(lastResult.type==='menu') renderMenu(lastResult.items);
+    else if(lastResult.type==='text') renderText(lastResult.content);
   }
 }
 
+// ── Bookmarks ──
+function toggleBM(){
+  if(!current) return;
+  const url=curURL(), idx=bookmarks.indexOf(url);
+  if(idx===-1) bookmarks.push(url); else bookmarks.splice(idx,1);
+  localStorage.setItem('gopher_bookmarks',JSON.stringify(bookmarks));
+  updateStar();
+}
+function renderBMList(){
+  const l=$('bm-list');
+  if(!bookmarks.length){l.innerHTML='<div id="bm-empty">No bookmarks yet.<br>Tap ☆ to save a location.</div>';return;}
+  l.innerHTML=bookmarks.map((url,i)=>`<div class="bm-item">
+    <div class="bm-url" data-url="${esc(url)}">${esc(url)}</div>
+    <button class="bm-delete" data-idx="${i}">✕</button>
+  </div>`).join('');
+  l.querySelectorAll('.bm-url').forEach(el=>{
+    el.addEventListener('click',()=>{const p=parseURL(el.dataset.url);if(p){closeBM();go(p.host,p.port,p.sel,el.dataset.url);}});
+  });
+  l.querySelectorAll('.bm-delete').forEach(el=>{
+    el.addEventListener('click',e=>{
+      e.stopPropagation();
+      bookmarks.splice(+el.dataset.idx,1);
+      localStorage.setItem('gopher_bookmarks',JSON.stringify(bookmarks));
+      updateStar(); renderBMList();
+    });
+  });
+}
+function openBM(){renderBMList();$('bm-overlay').classList.add('visible');}
+function closeBM(){$('bm-overlay').classList.remove('visible');}
+
+// ── Search ──
+function openSearch(host,port,sel,title){
+  pendingSearch={host,port,sel,title};
+  $('search-server-label').textContent='Server: '+host;
+  $('search-input').value='';
+  $('search-overlay').classList.add('visible');
+  setTimeout(()=>$('search-input').focus(),100);
+}
+function doSearch(){
+  const q=$('search-input').value.trim();
+  if(!q||!pendingSearch) return;
+  $('search-overlay').classList.remove('visible');
+  const {host,port,sel,title}=pendingSearch;
+  go(host,port,sel+'\t'+q,title+': '+q,'7');
+}
+function doVeronica(){
+  const q=$('veronica-input').value.trim();
+  if(!q) return;
+  go('gopher.floodgap.com',70,'/v2/vs\t'+q,'Veronica: '+q,'7');
+  $('veronica-input').value='';
+}
+
 // ── Events ──
-backBtn.addEventListener('click', goBack);
-forwardBtn.addEventListener('click', goForward);
-$('reload-btn').addEventListener('click', () => { if (!onHomePage && current) load(); });
-$('home-btn').addEventListener('click', () => {
-  if (current) backHistory.push({ ...current, onHomePage: false });
-  forwardHistory = [];
+$('back-btn').addEventListener('click',goBack);
+$('fwd-btn').addEventListener('click',goFwd);
+$('reload-btn').addEventListener('click',()=>{if(!onHome&&current)load();});
+$('home-btn').addEventListener('click',()=>{
+  if(current) backStack.push({...current,onHome:false});
+  fwdStack=[];
   showHome();
 });
-starBtn.addEventListener('click', toggleBookmark);
-$('raw-btn').addEventListener('click', toggleRaw);
-$('bm-btn').addEventListener('click', openBM);
-$('bm-close').addEventListener('click', closeBM);
-$('bm-overlay').addEventListener('click', e => { if (e.target === $('bm-overlay')) closeBM(); });
+$('star-btn').addEventListener('click',toggleBM);
+$('raw-btn').addEventListener('click',toggleRaw);
+$('bm-btn').addEventListener('click',openBM);
+$('bm-close').addEventListener('click',closeBM);
+$('bm-overlay').addEventListener('click',e=>{if(e.target===$('bm-overlay'))closeBM();});
 
-$('go-btn').addEventListener('click', () => { const p = parseURL(addressInput.value); if (p) navigate(p.host, p.port, p.selector, addressInput.value); });
-addressInput.addEventListener('keydown', e => { if (e.key === 'Enter') $('go-btn').click(); });
-$('retry-btn').addEventListener('click', load);
+$('go-btn').addEventListener('click',()=>{const p=parseURL($('address-input').value);if(p)go(p.host,p.port,p.sel,$('address-input').value);});
+$('address-input').addEventListener('keydown',e=>{if(e.key==='Enter')$('go-btn').click();});
+$('retry-btn').addEventListener('click',()=>{if(current)load();});
 
-$('font-up').addEventListener('click', () => { fontSize = Math.min(24, fontSize+1); textContent.style.fontSize = fontSize+'px'; localStorage.setItem('gopher_fontsize', fontSize); });
-$('font-dn').addEventListener('click', () => { fontSize = Math.max(9,  fontSize-1); textContent.style.fontSize = fontSize+'px'; localStorage.setItem('gopher_fontsize', fontSize); });
+$('font-up').addEventListener('click',()=>{fontSize=Math.min(24,fontSize+1);$('text-content').style.fontSize=fontSize+'px';localStorage.setItem('gopher_fontsize',fontSize);});
+$('font-dn').addEventListener('click',()=>{fontSize=Math.max(9,fontSize-1);$('text-content').style.fontSize=fontSize+'px';localStorage.setItem('gopher_fontsize',fontSize);});
 
-$('search-cancel').addEventListener('click', () => $('search-overlay').classList.remove('visible'));
-$('search-go').addEventListener('click', doSearch);
-$('search-input').addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(); });
+$('search-cancel').addEventListener('click',()=>$('search-overlay').classList.remove('visible'));
+$('search-go').addEventListener('click',doSearch);
+$('search-input').addEventListener('keydown',e=>{if(e.key==='Enter')doSearch();});
+$('veronica-btn').addEventListener('click',doVeronica);
+$('veronica-input').addEventListener('keydown',e=>{if(e.key==='Enter')doVeronica();});
 
-$('veronica-btn').addEventListener('click', doVeronicaSearch);
-$('veronica-input').addEventListener('keydown', e => { if (e.key === 'Enter') doVeronicaSearch(); });
+$('theme-btn').addEventListener('click',()=>$('theme-overlay').classList.add('visible'));
+$('theme-done').addEventListener('click',()=>$('theme-overlay').classList.remove('visible'));
+$('theme-overlay').addEventListener('click',e=>{if(e.target===$('theme-overlay'))$('theme-overlay').classList.remove('visible');});
+document.querySelectorAll('.theme-opt').forEach(el=>el.addEventListener('click',()=>applyTheme(el.dataset.t)));
 
-// Theme
-$('theme-btn').addEventListener('click', () => $('theme-overlay').classList.add('visible'));
-$('theme-close-btn').addEventListener('click', () => $('theme-overlay').classList.remove('visible'));
-$('theme-overlay').addEventListener('click', e => { if (e.target === $('theme-overlay')) $('theme-overlay').classList.remove('visible'); });
-document.querySelectorAll('.theme-opt').forEach(el => {
-  el.addEventListener('click', () => applyTheme(el.dataset.themeName));
-});
+$('log-btn').addEventListener('click',()=>{renderLog();$('log-overlay').classList.add('visible');});
+$('log-close').addEventListener('click',()=>$('log-overlay').classList.remove('visible'));
+$('log-overlay').addEventListener('click',e=>{if(e.target===$('log-overlay'))$('log-overlay').classList.remove('visible');});
+$('log-clear').addEventListener('click',()=>{connLog=[];renderLog();});
 
-// Log
-$('log-btn').addEventListener('click', () => { renderLog(); $('log-overlay').classList.add('visible'); });
-$('log-close').addEventListener('click', () => $('log-overlay').classList.remove('visible'));
-$('log-overlay').addEventListener('click', e => { if (e.target === $('log-overlay')) $('log-overlay').classList.remove('visible'); });
-$('log-clear').addEventListener('click', () => { connLog = []; renderLog(); });
-
-// Boot
+// ── Boot ──
 showHome();
 </script>
 </body>
