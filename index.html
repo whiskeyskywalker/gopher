@@ -96,13 +96,6 @@
     #text-view.visible{display:block;}
     #text-content{font-size:13px;line-height:1.6;white-space:pre-wrap;word-break:break-word;color:var(--text);}
 
-    /* Raw */
-    #raw-view{display:none;padding:16px;}
-    #raw-view.visible{display:block;}
-    .raw-legend{font-size:11px;color:var(--muted);margin-bottom:10px;line-height:2;}
-    .raw-legend span{display:inline-block;margin-right:10px;}
-    #raw-content{font-size:12px;line-height:1.5;white-space:pre-wrap;word-break:break-all;color:var(--accent);background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px;}
-
     /* Image */
     #image-view{display:none;flex-direction:column;align-items:center;padding:20px;gap:12px;}
     #image-view.visible{display:flex;}
@@ -194,7 +187,6 @@
       <button class="icon-btn" id="reload-btn">↺</button>
       <div id="title-bar">Gopherspace</div>
       <button class="icon-btn" id="star-btn">☆</button>
-      <button class="icon-btn" id="raw-btn" title="Raw">&lt;/&gt;</button>
       <button class="icon-btn" id="log-btn" title="Log">▤</button>
       <button class="icon-btn" id="theme-btn" title="Theme">◑</button>
       <button class="icon-btn" id="bm-btn" title="Bookmarks">≡</button>
@@ -216,13 +208,6 @@
     <div id="home-view"></div>
     <div id="menu-view"></div>
     <div id="text-view"><pre id="text-content"></pre></div>
-    <div id="raw-view">
-      <div class="raw-legend">
-        <span>0=text</span><span>1=dir</span><span>7=search</span><span>i=info</span>
-        <span>g/I=image</span><span>9=bin</span><span>·=tab</span>
-      </div>
-      <pre id="raw-content"></pre>
-    </div>
     <div id="image-view"></div>
     <div id="error-view">
       <div id="error-icon">⚠</div>
@@ -309,7 +294,6 @@ let bookmarks = JSON.parse(localStorage.getItem('gopher_bookmarks') || '[]');
 let fontSize = parseInt(localStorage.getItem('gopher_fontsize') || '13');
 let pendingSearch = null;
 let connLog = [];
-let lastRaw = '', lastResult = null, rawMode = false;
 
 // ── Item types ──
 const TYPES = {
@@ -388,7 +372,7 @@ async function gopherFetch(host,port,sel){
 }
 
 // ── Views ──
-const VIEWS = ['loading','home-view','menu-view','text-view','raw-view','image-view','error-view'];
+const VIEWS = ['loading','home-view','menu-view','text-view','image-view','error-view'];
 function showView(which){
   VIEWS.forEach(v=>$(v).classList.remove('visible'));
   $('text-controls').classList.remove('visible');
@@ -412,11 +396,10 @@ function updateStar(){
   $('star-btn').textContent=has?'★':'☆';
   $('star-btn').classList.toggle('active',!!has);
 }
-function updateRaw(){$('raw-btn').classList.toggle('active',rawMode);}
 
 // ── Home ──
 function showHome(){
-  onHome=true; current=null; rawMode=false;
+  onHome=true; current=null; rawMode=false; lastRaw=''; lastResult=null;
   updateNav(); updateAddr(); updateStar(); updateRaw();
   const bmHtml = bookmarks.length ? `
     <div class="home-section">
@@ -552,17 +535,6 @@ function triggerDownload(host,port,sel,title){
   setTimeout(updateAddr,2500);
 }
 
-// ── Raw mode ──
-function toggleRaw(){
-  if(onHome||!lastResult) return;
-  rawMode=!rawMode; updateRaw();
-  if(rawMode){
-    $('raw-content').textContent=lastRaw.replace(/\t/g,'·').replace(/\r/g,'');
-    showView('raw-view');
-  } else {
-    if(lastResult.type==='menu') renderMenu(lastResult.items);
-    else if(lastResult.type==='text') renderText(lastResult.content);
-  }
 }
 
 // ── Bookmarks ──
@@ -627,7 +599,6 @@ $('home-btn').addEventListener('click',()=>{
   showHome();
 });
 $('star-btn').addEventListener('click',toggleBM);
-$('raw-btn').addEventListener('click',toggleRaw);
 $('bm-btn').addEventListener('click',openBM);
 $('bm-close').addEventListener('click',closeBM);
 $('bm-overlay').addEventListener('click',e=>{if(e.target===$('bm-overlay'))closeBM();});
