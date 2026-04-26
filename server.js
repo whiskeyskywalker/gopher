@@ -32,8 +32,26 @@ function parseMenu(raw) {
   return items;
 }
 
+// A real Gopher menu must have multiple lines where the host field
+// is a non-empty, non-fake hostname (not 'error.host' or '(NULL)').
+// Plain text files sometimes contain tabs but are NOT menus.
 function looksLikeMenu(raw) {
-  return raw.split('\n').slice(0, 10).some(l => l.length > 1 && l.includes('\t'));
+  const lines = raw.split('\n').slice(0, 30);
+  let realMenuLines = 0;
+  for (const line of lines) {
+    const trimmed = line.replace(/\r$/, '');
+    if (!trimmed || trimmed === '.') continue;
+    const parts = trimmed.slice(1).split('\t');
+    if (parts.length >= 4) {
+      const host = parts[2].trim();
+      // Must have a real hostname — not empty, not a placeholder
+      if (host && host !== '(NULL)' && host !== 'error.host' && host !== 'fake' && host.includes('.')) {
+        realMenuLines++;
+      }
+    }
+  }
+  // Require at least 2 real menu lines to be considered a menu
+  return realMenuLines >= 2;
 }
 
 function gopherFetch(host, port, selector) {
