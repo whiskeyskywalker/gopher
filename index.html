@@ -37,6 +37,11 @@
     #veronica-input:focus{border-color:var(--search-color);}
     #veronica-input::placeholder{color:var(--muted);}
     #veronica-btn{background:var(--search-color);color:#fff;border:none;font-family:var(--font);font-size:12px;font-weight:600;padding:7px 12px;border-radius:8px;cursor:pointer;flex-shrink:0;}
+    #pedia-bar{display:flex;gap:6px;align-items:center;margin-top:6px;}
+    #pedia-input{flex:1;background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:var(--font);font-size:13px;padding:7px 10px;border-radius:8px;outline:none;transition:border-color .15s;}
+    #pedia-input:focus{border-color:var(--accent2);}
+    #pedia-input::placeholder{color:var(--muted);}
+    #pedia-btn{background:var(--accent2);color:#fff;border:none;font-family:var(--font);font-size:12px;font-weight:600;padding:7px 12px;border-radius:8px;cursor:pointer;flex-shrink:0;}
     #content{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;}
     #loading{display:none;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:16px;}
     #loading.visible{display:flex;}
@@ -165,6 +170,11 @@
       <input id="veronica-input" type="text" placeholder="🔍 Search Gopherspace (Veronica-2)…"
              autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
       <button id="veronica-btn">Search</button>
+    </div>
+    <div id="pedia-bar">
+      <input id="pedia-input" type="text" placeholder="📖 Search Gopherpedia…"
+             autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+      <button id="pedia-btn">Search</button>
     </div>
   </div>
   <div id="content">
@@ -572,6 +582,13 @@ function doVeronica() {
   $('veronica-input').value = '';
 }
 
+function doPedia() {
+  var q = $('pedia-input').value.trim();
+  if (!q) return;
+  go('gopherpedia.com', 70, '/lookup	'+q, 'Gopherpedia: '+q, '0');
+  $('pedia-input').value = '';
+}
+
 // Events
 $('back-btn').addEventListener('click', goBack);
 $('fwd-btn').addEventListener('click', goFwd);
@@ -598,6 +615,8 @@ $('search-go').addEventListener('click', doSearch);
 $('search-input').addEventListener('keydown', function(e){ if(e.key==='Enter') doSearch(); });
 $('veronica-btn').addEventListener('click', doVeronica);
 $('veronica-input').addEventListener('keydown', function(e){ if(e.key==='Enter') doVeronica(); });
+$('pedia-btn').addEventListener('click', doPedia);
+$('pedia-input').addEventListener('keydown', function(e){ if(e.key==='Enter') doPedia(); });
 $('theme-btn').addEventListener('click', function(){ $('theme-overlay').classList.add('visible'); });
 $('theme-done').addEventListener('click', function(){ $('theme-overlay').classList.remove('visible'); });
 $('theme-overlay').addEventListener('click', function(e){ if(e.target===$('theme-overlay')) $('theme-overlay').classList.remove('visible'); });
