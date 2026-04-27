@@ -12,23 +12,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --bg:#f5f5f0;--surface:#fff;--border:#d0d0c8;--accent:#007a3d;
-      --accent2:#0066aa;--text:#1a1a1a;--muted:#888880;--danger:#cc2233;
-      --dir-color:#0066aa;--txt-color:#1a1a1a;--search-color:#b36000;
-      --img-color:#6644bb;--info-color:#999990;
-      --safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px);
-      --font:'IBM Plex Mono',monospace;
-    }
+    :root{--bg:#f5f5f0;--surface:#fff;--border:#d0d0c8;--accent:#007a3d;--accent2:#0066aa;--text:#1a1a1a;--muted:#888880;--danger:#cc2233;--dir-color:#0066aa;--txt-color:#1a1a1a;--search-color:#b36000;--img-color:#6644bb;--info-color:#999990;--safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px);--font:'IBM Plex Mono',monospace;}
     [data-theme="dark"]{--bg:#0a0a0a;--surface:#111;--border:#222;--accent:#00cc66;--accent2:#00aaff;--text:#e8e8e8;--muted:#555;--danger:#ff4455;--dir-color:#00aaff;--txt-color:#e8e8e8;--search-color:#ffaa00;--img-color:#bb88ff;--info-color:#444;}
     [data-theme="amber"]{--bg:#1a1200;--surface:#221900;--border:#3a2c00;--accent:#ffaa00;--accent2:#ffcc44;--text:#ffdd88;--muted:#886600;--danger:#ff4422;--dir-color:#ffcc44;--txt-color:#ffdd88;--search-color:#ff8800;--img-color:#ffaa44;--info-color:#664400;}
     [data-theme="green"]{--bg:#001a00;--surface:#002200;--border:#003300;--accent:#00ff44;--accent2:#44ffaa;--text:#88ff88;--muted:#336633;--danger:#ff4422;--dir-color:#44ffaa;--txt-color:#88ff88;--search-color:#aaff00;--img-color:#00ffcc;--info-color:#225522;}
-
     *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
     html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font);overflow:hidden;}
     #app{display:flex;flex-direction:column;height:100dvh;padding-top:var(--safe-top);padding-bottom:var(--safe-bottom);}
-
-    /* Header */
     #header{background:var(--bg);border-bottom:1px solid var(--border);padding:8px 12px;flex-shrink:0;}
     #toolbar{display:flex;align-items:center;gap:5px;margin-bottom:8px;}
     .icon-btn{background:none;border:1px solid var(--border);color:var(--text);font-family:var(--font);font-size:15px;width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:border-color .15s,color .15s;}
@@ -47,19 +37,13 @@
     #veronica-input:focus{border-color:var(--search-color);}
     #veronica-input::placeholder{color:var(--muted);}
     #veronica-btn{background:var(--search-color);color:#fff;border:none;font-family:var(--font);font-size:12px;font-weight:600;padding:7px 12px;border-radius:8px;cursor:pointer;flex-shrink:0;}
-
-    /* Content */
     #content{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;}
-
-    /* Loading */
     #loading{display:none;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:16px;}
     #loading.visible{display:flex;}
     .spinner{width:32px;height:32px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;}
     @keyframes spin{to{transform:rotate(360deg);}}
     #loading p{font-size:12px;color:var(--muted);animation:pulse 1.5s ease-in-out infinite;}
     @keyframes pulse{0%,100%{opacity:.4}50%{opacity:1}}
-
-    /* Home */
     #home-view{display:none;padding:20px 16px;}
     #home-view.visible{display:block;}
     .home-section{margin-bottom:24px;}
@@ -71,8 +55,6 @@
     .home-server-name{font-size:14px;font-weight:500;}
     .home-server-host{font-size:11px;color:var(--muted);margin-top:2px;}
     .home-server-arrow{color:var(--muted);font-size:14px;}
-
-    /* Menu */
     #menu-view{display:none;}
     #menu-view.visible{display:block;}
     .gopher-item{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border);cursor:default;transition:background .1s;}
@@ -90,26 +72,18 @@
     .type-info .item-text{color:var(--info-color);font-size:12px;}
     .type-error .item-text{color:var(--danger);}
     .type-html .item-text{color:var(--accent);}
-
-    /* Text */
     #text-view{display:none;padding:16px;}
     #text-view.visible{display:block;}
     #text-content{font-size:13px;line-height:1.6;white-space:pre-wrap;word-break:break-word;color:var(--text);}
-
-    /* Image */
     #image-view{display:none;flex-direction:column;align-items:center;padding:20px;gap:12px;}
     #image-view.visible{display:flex;}
     #image-view img{max-width:100%;border-radius:8px;border:1px solid var(--border);}
-
-    /* Error */
     #error-view{display:none;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:12px;padding:32px;text-align:center;}
     #error-view.visible{display:flex;}
     #error-icon{font-size:48px;}
     #error-title{font-size:16px;font-weight:600;color:var(--danger);}
     #error-msg{font-size:12px;color:var(--muted);line-height:1.5;}
     #retry-btn{margin-top:8px;background:none;border:1px solid var(--accent);color:var(--text);font-family:var(--font);font-size:13px;padding:8px 20px;border-radius:8px;cursor:pointer;}
-
-    /* Bookmarks sheet */
     #bm-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;align-items:flex-end;}
     #bm-overlay.visible{display:flex;}
     #bm-sheet{background:var(--surface);border-top:1px solid var(--border);border-radius:16px 16px 0 0;width:100%;max-height:70dvh;display:flex;flex-direction:column;padding-bottom:var(--safe-bottom);}
@@ -122,8 +96,6 @@
     .bm-url{flex:1;font-size:13px;color:var(--accent2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
     .bm-delete{background:none;border:none;color:var(--danger);font-size:18px;cursor:pointer;padding:4px;font-family:var(--font);}
     #bm-empty{padding:40px;text-align:center;color:var(--muted);font-size:13px;line-height:1.8;}
-
-    /* Search dialog */
     #search-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;align-items:center;justify-content:center;padding:24px;}
     #search-overlay.visible{display:flex;}
     #search-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;width:100%;max-width:340px;}
@@ -135,8 +107,6 @@
     .search-btns button{font-family:var(--font);font-size:13px;padding:8px 16px;border-radius:8px;cursor:pointer;}
     #search-cancel{background:none;border:1px solid var(--border);color:var(--muted);}
     #search-go{background:var(--search-color);border:none;color:#fff;font-weight:600;}
-
-    /* Theme picker */
     #theme-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;align-items:flex-end;}
     #theme-overlay.visible{display:flex;}
     #theme-sheet{background:var(--surface);border-top:1px solid var(--border);border-radius:16px 16px 0 0;width:100%;padding:20px 16px calc(20px + var(--safe-bottom));}
@@ -149,8 +119,6 @@
     .theme-opt[data-t="green"]{background:#001a00;color:#88ff88;border-color:#003300;}
     .theme-opt.selected{outline:2px solid var(--accent);outline-offset:2px;}
     #theme-done{margin-top:16px;width:100%;padding:10px;background:none;border:1px solid var(--border);color:var(--muted);font-family:var(--font);font-size:13px;border-radius:8px;cursor:pointer;}
-
-    /* Log panel */
     #log-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;align-items:flex-end;}
     #log-overlay.visible{display:flex;}
     #log-sheet{background:var(--surface);border-top:1px solid var(--border);border-radius:16px 16px 0 0;width:100%;max-height:65dvh;display:flex;flex-direction:column;padding-bottom:var(--safe-bottom);}
@@ -168,12 +136,9 @@
     .log-ok{color:var(--accent);}
     .log-err{color:var(--danger);}
     #log-empty{padding:40px;text-align:center;color:var(--muted);font-size:13px;}
-
-    /* Font controls */
     #text-controls{display:none;position:fixed;bottom:calc(16px + var(--safe-bottom));right:16px;flex-direction:column;gap:4px;z-index:50;}
     #text-controls.visible{display:flex;}
     .size-btn{background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:var(--font);font-size:16px;width:36px;height:36px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
-
     body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.012) 2px,rgba(0,0,0,.012) 4px);pointer-events:none;z-index:9999;}
   </style>
 </head>
@@ -187,9 +152,9 @@
       <button class="icon-btn" id="reload-btn">↺</button>
       <div id="title-bar">Gopherspace</div>
       <button class="icon-btn" id="star-btn">☆</button>
-      <button class="icon-btn" id="log-btn" title="Log">▤</button>
-      <button class="icon-btn" id="theme-btn" title="Theme">◑</button>
-      <button class="icon-btn" id="bm-btn" title="Bookmarks">≡</button>
+      <button class="icon-btn" id="log-btn">▤</button>
+      <button class="icon-btn" id="theme-btn">◑</button>
+      <button class="icon-btn" id="bm-btn">≡</button>
     </div>
     <div id="address-row">
       <input id="address-input" type="text" placeholder="gopher://host:port/selector"
@@ -202,7 +167,6 @@
       <button id="veronica-btn">Search</button>
     </div>
   </div>
-
   <div id="content">
     <div id="loading"><div class="spinner"></div><p>Fetching from Gopherspace…</p></div>
     <div id="home-view"></div>
@@ -217,21 +181,16 @@
     </div>
   </div>
 </div>
-
 <div id="text-controls">
   <button class="size-btn" id="font-up">+</button>
   <button class="size-btn" id="font-dn">−</button>
 </div>
-
-<!-- Bookmarks -->
 <div id="bm-overlay">
   <div id="bm-sheet">
     <div id="bm-header"><h2>Bookmarks</h2><button id="bm-close">✕</button></div>
     <div id="bm-list"></div>
   </div>
 </div>
-
-<!-- Search -->
 <div id="search-overlay">
   <div id="search-box">
     <h3>🔍 Gopher Search</h3>
@@ -243,8 +202,6 @@
     </div>
   </div>
 </div>
-
-<!-- Theme -->
 <div id="theme-overlay">
   <div id="theme-sheet">
     <h2>Choose Theme</h2>
@@ -257,8 +214,6 @@
     <button id="theme-done">Done</button>
   </div>
 </div>
-
-<!-- Log -->
 <div id="log-overlay">
   <div id="log-sheet">
     <div id="log-header">
@@ -275,28 +230,30 @@
 <script>
 const PROXY_URL = 'https://gopher-7oxz.onrender.com';
 
-// ── Theme ──
+// Theme
 const THEME_META = {light:'#f5f5f0',dark:'#0a0a0a',amber:'#1a1200',green:'#001a00'};
 let theme = localStorage.getItem('gopher_theme') || 'light';
 function applyTheme(t) {
   theme = t;
-  document.documentElement.dataset.theme = t === 'light' ? '' : t;
+  document.documentElement.dataset.theme = (t === 'light') ? '' : t;
   document.getElementById('theme-color-meta').content = THEME_META[t];
   localStorage.setItem('gopher_theme', t);
-  document.querySelectorAll('.theme-opt').forEach(el => el.classList.toggle('selected', el.dataset.t === t));
+  document.querySelectorAll('.theme-opt').forEach(function(el) {
+    el.classList.toggle('selected', el.dataset.t === t);
+  });
 }
 applyTheme(theme);
 
-// ── State ──
-const $ = id => document.getElementById(id);
-let backStack = [], fwdStack = [], current = null, onHome = true;
-let bookmarks = JSON.parse(localStorage.getItem('gopher_bookmarks') || '[]');
-let fontSize = parseInt(localStorage.getItem('gopher_fontsize') || '13');
-let pendingSearch = null;
-let connLog = [];
+// State
+var $ = function(id) { return document.getElementById(id); };
+var backStack = [], fwdStack = [], current = null, onHome = true;
+var bookmarks = JSON.parse(localStorage.getItem('gopher_bookmarks') || '[]');
+var fontSize = parseInt(localStorage.getItem('gopher_fontsize') || '13');
+var pendingSearch = null;
+var connLog = [];
 
-// ── Item types ──
-const TYPES = {
+// Item types
+var TYPES = {
   '0':{icon:'📄',color:'type-text',nav:true},
   '1':{icon:'📁',color:'type-dir',nav:true},
   '7':{icon:'🔍',color:'type-search',nav:true},
@@ -309,324 +266,347 @@ const TYPES = {
   '5':{icon:'⬇',color:'type-bin',nav:true},
   '6':{icon:'⬇',color:'type-bin',nav:true},
   's':{icon:'🎵',color:'type-sound',nav:true},
-  '3':{icon:'⚠',color:'type-error',nav:false},
+  '3':{icon:'⚠',color:'type-error',nav:false}
 };
-const ti = t => TYPES[t] || {icon:'❓',color:'',nav:false};
+function ti(t) { return TYPES[t] || {icon:'❓',color:'',nav:false}; }
 
-// ── Home servers ──
-const SERVERS = [
+var SERVERS = [
   {icon:'🌍',name:'Floodgap Systems',    host:'gopher.floodgap.com',port:70,sel:''},
   {icon:'📰',name:'Hacker News (Gopher)',host:'hngopher.com',       port:70,sel:''},
   {icon:'🐧',name:'SDF Public Access',   host:'sdf.org',            port:70,sel:''},
-  {icon:'📝',name:'SDF Phlogosphere',    host:'phlogosphere.org',   port:70,sel:''},
+  {icon:'📝',name:'SDF Phlogosphere',    host:'phlogosphere.org',   port:70,sel:''}
 ];
 
-// ── Helpers ──
-function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
 function parseURL(s) {
   s = s.trim();
   if (!s) return null;
-  if (!s.startsWith('gopher://')) s = 'gopher://' + s;
+  if (s.indexOf('gopher://') !== 0) s = 'gopher://' + s;
   try {
-    const u = new URL(s);
-    let sel = u.pathname;
-    if (sel.length >= 2 && '01234567ghIisT+'.includes(sel[1])) sel = '/' + sel.slice(2);
-    return {host:u.hostname, port:parseInt(u.port)||70, sel};
-  } catch {
+    var u = new URL(s);
+    var sel = u.pathname;
+    if (sel.length >= 2 && '01234567ghIisT+'.indexOf(sel[1]) !== -1) sel = '/' + sel.slice(2);
+    return {host:u.hostname, port:parseInt(u.port)||70, sel:sel};
+  } catch(e) {
     s = s.replace('gopher://','');
-    const si = s.indexOf('/');
-    const hp = si===-1?s:s.slice(0,si);
-    const sel = si===-1?'':s.slice(si);
-    const [host,ps] = hp.split(':');
-    return {host, port:parseInt(ps)||70, sel};
+    var si = s.indexOf('/');
+    var hp = si===-1 ? s : s.slice(0,si);
+    var sel = si===-1 ? '' : s.slice(si);
+    var parts = hp.split(':');
+    return {host:parts[0], port:parseInt(parts[1])||70, sel:sel};
   }
 }
-function curURL(){return current?`gopher://${current.host}:${current.port}${current.sel||'/'}`:'';}
 
-// ── Log ──
-function addLog(host,port,sel,status,ms){
-  connLog.unshift({time:new Date().toLocaleTimeString(),host,port,sel,status,ms});
-  if(connLog.length>100) connLog.pop();
-}
-function renderLog(){
-  const l=$('log-list');
-  if(!connLog.length){l.innerHTML='<div id="log-empty">No connections yet.</div>';return;}
-  l.innerHTML=connLog.map(e=>`<div class="log-entry">
-    <div class="log-time">${e.time}</div>
-    <div class="log-host">${esc(e.host)}:${e.port}</div>
-    <div class="log-sel">${esc(e.sel||'/')}</div>
-    <div class="log-status ${e.status==='ok'?'log-ok':'log-err'}">${e.status==='ok'?'✓ '+e.ms+'ms':'✗ '+esc(e.status)}</div>
-  </div>`).join('');
+function curURL() {
+  return current ? ('gopher://'+current.host+':'+current.port+(current.sel||'/')) : '';
 }
 
-// ── Fetch ──
-async function gopherFetch(host,port,sel){
-  const t0=Date.now();
-  try {
-    const r=await fetch(`${PROXY_URL}/gopher?`+new URLSearchParams({host,port,selector:sel}));
-    if(!r.ok) throw new Error('Proxy error: '+r.status);
-    const j=await r.json();
-    addLog(host,port,sel,'ok',Date.now()-t0);
-    return j;
-  } catch(e){addLog(host,port,sel,e.message,Date.now()-t0);throw e;}
+// Log
+function addLog(host,port,sel,status,ms) {
+  connLog.unshift({time:new Date().toLocaleTimeString(),host:host,port:port,sel:sel,status:status,ms:ms});
+  if (connLog.length > 100) connLog.pop();
 }
 
-// ── Views ──
-const VIEWS = ['loading','home-view','menu-view','text-view','image-view','error-view'];
-function showView(which){
-  VIEWS.forEach(v=>$(v).classList.remove('visible'));
+function renderLog() {
+  var l = $('log-list');
+  if (!connLog.length) { l.innerHTML = '<div id="log-empty">No connections yet.</div>'; return; }
+  l.innerHTML = connLog.map(function(e) {
+    return '<div class="log-entry">'
+      + '<div class="log-time">'+e.time+'</div>'
+      + '<div class="log-host">'+esc(e.host)+':'+e.port+'</div>'
+      + '<div class="log-sel">'+esc(e.sel||'/')+'</div>'
+      + '<div class="log-status '+(e.status==='ok'?'log-ok':'log-err')+'">'+(e.status==='ok'?'✓ '+e.ms+'ms':'✗ '+esc(e.status))+'</div>'
+      + '</div>';
+  }).join('');
+}
+
+// Fetch
+function gopherFetch(host,port,sel) {
+  var t0 = Date.now();
+  var params = new URLSearchParams({host:host,port:port,selector:sel});
+  return fetch(PROXY_URL+'/gopher?'+params)
+    .then(function(r) {
+      if (!r.ok) throw new Error('Proxy error: '+r.status);
+      return r.json();
+    })
+    .then(function(j) {
+      addLog(host,port,sel,'ok',Date.now()-t0);
+      return j;
+    })
+    .catch(function(e) {
+      addLog(host,port,sel,e.message,Date.now()-t0);
+      throw e;
+    });
+}
+
+// Views
+var VIEWS = ['loading','home-view','menu-view','text-view','image-view','error-view'];
+function showView(which) {
+  VIEWS.forEach(function(v) { $(v).classList.remove('visible'); });
   $('text-controls').classList.remove('visible');
   $(which).classList.add('visible');
-  if(which==='text-view') $('text-controls').classList.add('visible');
-  $('content').scrollTop=0;
+  if (which === 'text-view') $('text-controls').classList.add('visible');
+  $('content').scrollTop = 0;
 }
-function showError(msg){$('error-msg').textContent=msg;showView('error-view');}
+function showError(msg) { $('error-msg').textContent = msg; showView('error-view'); }
 
-// ── UI updates ──
-function updateNav(){
-  $('back-btn').disabled=backStack.length===0;
-  $('fwd-btn').disabled=fwdStack.length===0;
+// UI
+function updateNav() {
+  $('back-btn').disabled = backStack.length === 0;
+  $('fwd-btn').disabled = fwdStack.length === 0;
 }
-function updateAddr(){
-  $('address-input').value=current?curURL():'';
-  $('title-bar').textContent=current?(current.title||curURL()):'Gopherspace';
+function updateAddr() {
+  $('address-input').value = current ? curURL() : '';
+  $('title-bar').textContent = current ? (current.title || curURL()) : 'Gopherspace';
 }
-function updateStar(){
-  const has=current&&bookmarks.includes(curURL());
-  $('star-btn').textContent=has?'★':'☆';
-  $('star-btn').classList.toggle('active',!!has);
+function updateStar() {
+  var has = current && bookmarks.indexOf(curURL()) !== -1;
+  $('star-btn').textContent = has ? '★' : '☆';
+  $('star-btn').classList.toggle('active', !!has);
 }
 
-// ── Home ──
-function showHome(){
-  onHome=true; current=null; rawMode=false; lastRaw=''; lastResult=null;
-  updateNav(); updateAddr(); updateStar(); updateRaw();
-  const bmHtml = bookmarks.length ? `
-    <div class="home-section">
-      <h2>Bookmarks</h2>
-      ${bookmarks.map((url,i)=>`<div class="home-server" data-bm="${i}">
-        <div class="home-server-icon">★</div>
-        <div class="home-server-body"><div class="home-server-name" style="color:var(--accent2)">${esc(url)}</div></div>
-        <div class="home-server-arrow">›</div>
-      </div>`).join('')}
-    </div>` : '';
-  $('home-view').innerHTML = `
-    <div class="home-section">
-      <h2>Popular Servers</h2>
-      ${SERVERS.map((s,i)=>`<div class="home-server" data-si="${i}">
-        <div class="home-server-icon">${s.icon}</div>
-        <div class="home-server-body">
-          <div class="home-server-name">${esc(s.name)}</div>
-          <div class="home-server-host">${esc(s.host)}</div>
-        </div>
-        <div class="home-server-arrow">›</div>
-      </div>`).join('')}
-    </div>${bmHtml}`;
-  $('home-view').querySelectorAll('[data-si]').forEach(el=>{
-    el.addEventListener('click',()=>{const s=SERVERS[+el.dataset.si];go(s.host,s.port,s.sel,s.name,'1');});
+// Home
+function showHome() {
+  onHome = true; current = null;
+  updateNav(); updateAddr(); updateStar();
+  var bmHtml = '';
+  if (bookmarks.length) {
+    bmHtml = '<div class="home-section"><h2>Bookmarks</h2>'
+      + bookmarks.map(function(url,i) {
+          return '<div class="home-server" data-bm="'+i+'">'
+            +'<div class="home-server-icon">★</div>'
+            +'<div class="home-server-body"><div class="home-server-name" style="color:var(--accent2)">'+esc(url)+'</div></div>'
+            +'<div class="home-server-arrow">›</div></div>';
+        }).join('')
+      + '</div>';
+  }
+  $('home-view').innerHTML = '<div class="home-section"><h2>Popular Servers</h2>'
+    + SERVERS.map(function(s,i) {
+        return '<div class="home-server" data-si="'+i+'">'
+          +'<div class="home-server-icon">'+s.icon+'</div>'
+          +'<div class="home-server-body">'
+          +'<div class="home-server-name">'+esc(s.name)+'</div>'
+          +'<div class="home-server-host">'+esc(s.host)+'</div>'
+          +'</div><div class="home-server-arrow">›</div></div>';
+      }).join('')
+    + '</div>' + bmHtml;
+
+  $('home-view').querySelectorAll('[data-si]').forEach(function(el) {
+    el.addEventListener('click', function() {
+      var s = SERVERS[parseInt(el.dataset.si)];
+      go(s.host, s.port, s.sel, s.name, '1');
+    });
   });
-  $('home-view').querySelectorAll('[data-bm]').forEach(el=>{
-    el.addEventListener('click',()=>{const p=parseURL(bookmarks[+el.dataset.bm]);if(p)go(p.host,p.port,p.sel,bookmarks[+el.dataset.bm]);});
+  $('home-view').querySelectorAll('[data-bm]').forEach(function(el) {
+    el.addEventListener('click', function() {
+      var url = bookmarks[parseInt(el.dataset.bm)];
+      var p = parseURL(url);
+      if (p) go(p.host, p.port, p.sel, url);
+    });
   });
   showView('home-view');
 }
 
-// ── Navigation ──
-async function go(host,port,sel,title,type){
-  if(current) backStack.push({...current,onHome:false});
-  fwdStack=[];
-  current={host,port,sel,title:title||`${host}${sel}`,type};
-  onHome=false; rawMode=false;
-  updateNav(); updateAddr(); updateStar(); updateRaw();
-  if(type==='g'||type==='I'){await loadImage(host,port,sel,title);return;}
-  if('9456s'.includes(type||'')){triggerDownload(host,port,sel,title);return;}
-  await load();
+// Navigate
+function go(host, port, sel, title, type) {
+  if (current) backStack.push({host:current.host,port:current.port,sel:current.sel,title:current.title,type:current.type,onHome:false});
+  fwdStack = [];
+  current = {host:host, port:port, sel:sel, title:title||(host+sel), type:type};
+  onHome = false;
+  updateNav(); updateAddr(); updateStar();
+  if (type==='g'||type==='I') { loadImage(host,port,sel,title); return; }
+  if (type&&'9456s'.indexOf(type)!==-1) { triggerDownload(host,port,sel,title); return; }
+  load();
 }
 
-async function goBack(){
-  if(!backStack.length) return;
-  if(current) fwdStack.push({...current,onHome});
-  const p=backStack.pop();
-  if(p.onHome){current=null;onHome=true;updateNav();updateAddr();updateStar();showHome();return;}
-  current={host:p.host,port:p.port,sel:p.sel,title:p.title,type:p.type};
-  onHome=false; rawMode=false;
-  updateNav(); updateAddr(); updateStar(); updateRaw();
-  if(p.type==='g'||p.type==='I'){await loadImage(p.host,p.port,p.sel,p.title);return;}
-  await load();
+function goBack() {
+  if (!backStack.length) return;
+  if (current) fwdStack.push({host:current.host,port:current.port,sel:current.sel,title:current.title,type:current.type,onHome:onHome});
+  var p = backStack.pop();
+  if (p.onHome) { current=null; onHome=true; updateNav(); updateAddr(); updateStar(); showHome(); return; }
+  current = {host:p.host,port:p.port,sel:p.sel,title:p.title,type:p.type};
+  onHome = false;
+  updateNav(); updateAddr(); updateStar();
+  if (p.type==='g'||p.type==='I') { loadImage(p.host,p.port,p.sel,p.title); return; }
+  load();
 }
 
-async function goFwd(){
-  if(!fwdStack.length) return;
-  if(current) backStack.push({...current,onHome});
-  const n=fwdStack.pop();
-  if(n.onHome){current=null;onHome=true;updateNav();updateAddr();updateStar();showHome();return;}
-  current={host:n.host,port:n.port,sel:n.sel,title:n.title,type:n.type};
-  onHome=false; rawMode=false;
-  updateNav(); updateAddr(); updateStar(); updateRaw();
-  if(n.type==='g'||n.type==='I'){await loadImage(n.host,n.port,n.sel,n.title);return;}
-  await load();
+function goFwd() {
+  if (!fwdStack.length) return;
+  if (current) backStack.push({host:current.host,port:current.port,sel:current.sel,title:current.title,type:current.type,onHome:onHome});
+  var n = fwdStack.pop();
+  if (n.onHome) { current=null; onHome=true; updateNav(); updateAddr(); updateStar(); showHome(); return; }
+  current = {host:n.host,port:n.port,sel:n.sel,title:n.title,type:n.type};
+  onHome = false;
+  updateNav(); updateAddr(); updateStar();
+  if (n.type==='g'||n.type==='I') { loadImage(n.host,n.port,n.sel,n.title); return; }
+  load();
 }
 
-async function load(){
+function load() {
   showView('loading');
-  try {
-    const r=await gopherFetch(current.host,current.port,current.sel);
-    lastRaw=r.raw||''; lastResult=r;
-    if(r.type==='menu') renderMenu(r.items);
-    else if(r.type==='text') renderText(r.content);
-    else showError('Unknown response');
-  } catch(e){showError(e.message||'Failed to connect');}
+  gopherFetch(current.host, current.port, current.sel)
+    .then(function(r) {
+      if (r.type==='menu') renderMenu(r.items);
+      else if (r.type==='text') renderText(r.content);
+      else showError('Unknown response');
+    })
+    .catch(function(e) { showError(e.message||'Failed to connect'); });
 }
 
-// ── Render ──
-function renderMenu(items){
-  $('menu-view').innerHTML=items.map(item=>{
-    const info=ti(item.type), isInfo=item.type==='i';
-    if(isInfo&&!item.text.trim()) return `<div class="gopher-item type-info" style="padding:3px 14px;border:none;"><div class="item-text"> </div></div>`;
-    return `<div class="gopher-item ${info.color} ${info.nav?'navigable':''}"
-      data-type="${esc(item.type)}" data-host="${esc(item.host)}" data-port="${item.port}"
-      data-sel="${esc(item.selector)}" data-text="${esc(item.text)}">
-      ${isInfo?'':`<div class="item-icon">${info.icon}</div>`}
-      <div class="item-body">
-        <div class="item-text">${esc(item.text)}</div>
-        ${(!isInfo&&item.host)?`<div class="item-meta">${esc(item.host)}:${item.port}</div>`:''}
-      </div>
-      ${info.nav?'<div class="item-arrow">›</div>':''}
-    </div>`;
+function renderMenu(items) {
+  $('menu-view').innerHTML = items.map(function(item) {
+    var info = ti(item.type);
+    var isInfo = item.type === 'i';
+    if (isInfo && !item.text.trim()) return '<div class="gopher-item type-info" style="padding:3px 14px;border:none;"><div class="item-text"> </div></div>';
+    return '<div class="gopher-item '+info.color+' '+(info.nav?'navigable':'')+'"'
+      +' data-type="'+esc(item.type)+'" data-host="'+esc(item.host)+'" data-port="'+item.port+'"'
+      +' data-sel="'+esc(item.selector)+'" data-text="'+esc(item.text)+'">'
+      +(isInfo?'':'<div class="item-icon">'+info.icon+'</div>')
+      +'<div class="item-body">'
+      +'<div class="item-text">'+esc(item.text)+'</div>'
+      +(!isInfo&&item.host?'<div class="item-meta">'+esc(item.host)+':'+item.port+'</div>':'')
+      +'</div>'
+      +(info.nav?'<div class="item-arrow">›</div>':'')
+      +'</div>';
   }).join('');
   showView('menu-view');
-  $('menu-view').querySelectorAll('.navigable').forEach(el=>{
-    el.addEventListener('click',()=>{
-      const {type,host,port,sel,text}=el.dataset;
-      if(type==='7') openSearch(host,+port,sel,text);
-      else go(host,+port,sel,text,type);
+  $('menu-view').querySelectorAll('.navigable').forEach(function(el) {
+    el.addEventListener('click', function() {
+      var type=el.dataset.type, host=el.dataset.host, port=parseInt(el.dataset.port),
+          sel=el.dataset.sel, text=el.dataset.text;
+      if (type==='7') openSearch(host,port,sel,text);
+      else go(host,port,sel,text,type);
     });
   });
 }
 
-function renderText(text){
-  $('text-content').textContent=text;
-  $('text-content').style.fontSize=fontSize+'px';
+function renderText(text) {
+  $('text-content').textContent = text;
+  $('text-content').style.fontSize = fontSize+'px';
   showView('text-view');
 }
 
-async function loadImage(host,port,sel,title){
+function loadImage(host,port,sel,title) {
   showView('loading');
-  try {
-    const t0=Date.now();
-    const r=await fetch(`${PROXY_URL}/image?`+new URLSearchParams({host,port,selector:sel}));
-    if(!r.ok) throw new Error('Image error');
-    const j=await r.json();
-    addLog(host,port,sel,'ok',Date.now()-t0);
-    $('image-view').innerHTML=`
-      <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">${esc(title||sel)}</div>
-      <img src="data:${j.mime};base64,${j.data}" alt="${esc(title||'')}">`;
-    showView('image-view');
-  } catch(e){addLog(host,port,sel,e.message,0);showError('Could not load image: '+e.message);}
+  var t0 = Date.now();
+  var params = new URLSearchParams({host:host,port:port,selector:sel});
+  fetch(PROXY_URL+'/image?'+params)
+    .then(function(r) { if (!r.ok) throw new Error('Image error'); return r.json(); })
+    .then(function(j) {
+      addLog(host,port,sel,'ok',Date.now()-t0);
+      $('image-view').innerHTML = '<div style="font-size:12px;color:var(--muted);margin-bottom:8px;">'+esc(title||sel)+'</div>'
+        +'<img src="data:'+j.mime+';base64,'+j.data+'" alt="'+esc(title||'')+'">';
+      showView('image-view');
+    })
+    .catch(function(e) { addLog(host,port,sel,e.message,0); showError('Could not load image: '+e.message); });
 }
 
-function triggerDownload(host,port,sel,title){
-  const filename=sel.split('/').pop()||title||'download';
-  const a=document.createElement('a');
-  a.href=`${PROXY_URL}/binary?`+new URLSearchParams({host,port,selector:sel,filename});
-  a.download=filename; document.body.appendChild(a); a.click(); document.body.removeChild(a);
+function triggerDownload(host,port,sel,title) {
+  var filename = sel.split('/').pop() || title || 'download';
+  var a = document.createElement('a');
+  a.href = PROXY_URL+'/binary?'+new URLSearchParams({host:host,port:port,selector:sel,filename:filename});
+  a.download = filename;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
   addLog(host,port,sel,'ok (download)',0);
-  $('title-bar').textContent='⬇ '+filename;
-  setTimeout(updateAddr,2500);
+  $('title-bar').textContent = '⬇ '+filename;
+  setTimeout(updateAddr, 2500);
 }
 
-}
-
-// ── Bookmarks ──
-function toggleBM(){
-  if(!current) return;
-  const url=curURL(), idx=bookmarks.indexOf(url);
-  if(idx===-1) bookmarks.push(url); else bookmarks.splice(idx,1);
-  localStorage.setItem('gopher_bookmarks',JSON.stringify(bookmarks));
+// Bookmarks
+function toggleBM() {
+  if (!current) return;
+  var url = curURL();
+  var idx = bookmarks.indexOf(url);
+  if (idx===-1) bookmarks.push(url); else bookmarks.splice(idx,1);
+  localStorage.setItem('gopher_bookmarks', JSON.stringify(bookmarks));
   updateStar();
 }
-function renderBMList(){
-  const l=$('bm-list');
-  if(!bookmarks.length){l.innerHTML='<div id="bm-empty">No bookmarks yet.<br>Tap ☆ to save a location.</div>';return;}
-  l.innerHTML=bookmarks.map((url,i)=>`<div class="bm-item">
-    <div class="bm-url" data-url="${esc(url)}">${esc(url)}</div>
-    <button class="bm-delete" data-idx="${i}">✕</button>
-  </div>`).join('');
-  l.querySelectorAll('.bm-url').forEach(el=>{
-    el.addEventListener('click',()=>{const p=parseURL(el.dataset.url);if(p){closeBM();go(p.host,p.port,p.sel,el.dataset.url);}});
+
+function renderBMList() {
+  var l = $('bm-list');
+  if (!bookmarks.length) { l.innerHTML='<div id="bm-empty">No bookmarks yet.<br>Tap ☆ to save a location.</div>'; return; }
+  l.innerHTML = bookmarks.map(function(url,i) {
+    return '<div class="bm-item"><div class="bm-url" data-url="'+esc(url)+'">'+esc(url)+'</div>'
+      +'<button class="bm-delete" data-idx="'+i+'">✕</button></div>';
+  }).join('');
+  l.querySelectorAll('.bm-url').forEach(function(el) {
+    el.addEventListener('click', function() {
+      var p = parseURL(el.dataset.url);
+      if (p) { closeBM(); go(p.host,p.port,p.sel,el.dataset.url); }
+    });
   });
-  l.querySelectorAll('.bm-delete').forEach(el=>{
-    el.addEventListener('click',e=>{
+  l.querySelectorAll('.bm-delete').forEach(function(el) {
+    el.addEventListener('click', function(e) {
       e.stopPropagation();
-      bookmarks.splice(+el.dataset.idx,1);
+      bookmarks.splice(parseInt(el.dataset.idx),1);
       localStorage.setItem('gopher_bookmarks',JSON.stringify(bookmarks));
       updateStar(); renderBMList();
     });
   });
 }
-function openBM(){renderBMList();$('bm-overlay').classList.add('visible');}
-function closeBM(){$('bm-overlay').classList.remove('visible');}
+function openBM() { renderBMList(); $('bm-overlay').classList.add('visible'); }
+function closeBM() { $('bm-overlay').classList.remove('visible'); }
 
-// ── Search ──
-function openSearch(host,port,sel,title){
-  pendingSearch={host,port,sel,title};
-  $('search-server-label').textContent='Server: '+host;
-  $('search-input').value='';
+// Search
+function openSearch(host,port,sel,title) {
+  pendingSearch = {host:host,port:port,sel:sel,title:title};
+  $('search-server-label').textContent = 'Server: '+host;
+  $('search-input').value = '';
   $('search-overlay').classList.add('visible');
-  setTimeout(()=>$('search-input').focus(),100);
+  setTimeout(function(){ $('search-input').focus(); }, 100);
 }
-function doSearch(){
-  const q=$('search-input').value.trim();
-  if(!q||!pendingSearch) return;
+function doSearch() {
+  var q = $('search-input').value.trim();
+  if (!q||!pendingSearch) return;
   $('search-overlay').classList.remove('visible');
-  const {host,port,sel,title}=pendingSearch;
-  go(host,port,sel+'\t'+q,title+': '+q,'7');
+  go(pendingSearch.host, pendingSearch.port, pendingSearch.sel+'\t'+q, pendingSearch.title+': '+q, '7');
 }
-function doVeronica(){
-  const q=$('veronica-input').value.trim();
-  if(!q) return;
-  go('gopher.floodgap.com',70,'/v2/vs\t'+q,'Veronica: '+q,'7');
-  $('veronica-input').value='';
+function doVeronica() {
+  var q = $('veronica-input').value.trim();
+  if (!q) return;
+  go('gopher.floodgap.com', 70, '/v2/vs\t'+q, 'Veronica: '+q, '7');
+  $('veronica-input').value = '';
 }
 
-// ── Events ──
-$('back-btn').addEventListener('click',goBack);
-$('fwd-btn').addEventListener('click',goFwd);
-$('reload-btn').addEventListener('click',()=>{if(!onHome&&current)load();});
-$('home-btn').addEventListener('click',()=>{
-  if(current) backStack.push({...current,onHome:false});
+// Events
+$('back-btn').addEventListener('click', goBack);
+$('fwd-btn').addEventListener('click', goFwd);
+$('reload-btn').addEventListener('click', function(){ if (!onHome&&current) load(); });
+$('home-btn').addEventListener('click', function(){
+  if (current) backStack.push({host:current.host,port:current.port,sel:current.sel,title:current.title,type:current.type,onHome:false});
   fwdStack=[];
   showHome();
 });
-$('star-btn').addEventListener('click',toggleBM);
-$('bm-btn').addEventListener('click',openBM);
-$('bm-close').addEventListener('click',closeBM);
-$('bm-overlay').addEventListener('click',e=>{if(e.target===$('bm-overlay'))closeBM();});
+$('star-btn').addEventListener('click', toggleBM);
+$('bm-btn').addEventListener('click', openBM);
+$('bm-close').addEventListener('click', closeBM);
+$('bm-overlay').addEventListener('click', function(e){ if(e.target===$('bm-overlay')) closeBM(); });
+$('go-btn').addEventListener('click', function(){
+  var p = parseURL($('address-input').value);
+  if (p) go(p.host,p.port,p.sel,$('address-input').value);
+});
+$('address-input').addEventListener('keydown', function(e){ if(e.key==='Enter') $('go-btn').click(); });
+$('retry-btn').addEventListener('click', function(){ if(current) load(); });
+$('font-up').addEventListener('click', function(){ fontSize=Math.min(24,fontSize+1); $('text-content').style.fontSize=fontSize+'px'; localStorage.setItem('gopher_fontsize',fontSize); });
+$('font-dn').addEventListener('click', function(){ fontSize=Math.max(9,fontSize-1); $('text-content').style.fontSize=fontSize+'px'; localStorage.setItem('gopher_fontsize',fontSize); });
+$('search-cancel').addEventListener('click', function(){ $('search-overlay').classList.remove('visible'); });
+$('search-go').addEventListener('click', doSearch);
+$('search-input').addEventListener('keydown', function(e){ if(e.key==='Enter') doSearch(); });
+$('veronica-btn').addEventListener('click', doVeronica);
+$('veronica-input').addEventListener('keydown', function(e){ if(e.key==='Enter') doVeronica(); });
+$('theme-btn').addEventListener('click', function(){ $('theme-overlay').classList.add('visible'); });
+$('theme-done').addEventListener('click', function(){ $('theme-overlay').classList.remove('visible'); });
+$('theme-overlay').addEventListener('click', function(e){ if(e.target===$('theme-overlay')) $('theme-overlay').classList.remove('visible'); });
+document.querySelectorAll('.theme-opt').forEach(function(el){ el.addEventListener('click', function(){ applyTheme(el.dataset.t); }); });
+$('log-btn').addEventListener('click', function(){ renderLog(); $('log-overlay').classList.add('visible'); });
+$('log-close').addEventListener('click', function(){ $('log-overlay').classList.remove('visible'); });
+$('log-overlay').addEventListener('click', function(e){ if(e.target===$('log-overlay')) $('log-overlay').classList.remove('visible'); });
+$('log-clear').addEventListener('click', function(){ connLog=[]; renderLog(); });
 
-$('go-btn').addEventListener('click',()=>{const p=parseURL($('address-input').value);if(p)go(p.host,p.port,p.sel,$('address-input').value);});
-$('address-input').addEventListener('keydown',e=>{if(e.key==='Enter')$('go-btn').click();});
-$('retry-btn').addEventListener('click',()=>{if(current)load();});
-
-$('font-up').addEventListener('click',()=>{fontSize=Math.min(24,fontSize+1);$('text-content').style.fontSize=fontSize+'px';localStorage.setItem('gopher_fontsize',fontSize);});
-$('font-dn').addEventListener('click',()=>{fontSize=Math.max(9,fontSize-1);$('text-content').style.fontSize=fontSize+'px';localStorage.setItem('gopher_fontsize',fontSize);});
-
-$('search-cancel').addEventListener('click',()=>$('search-overlay').classList.remove('visible'));
-$('search-go').addEventListener('click',doSearch);
-$('search-input').addEventListener('keydown',e=>{if(e.key==='Enter')doSearch();});
-$('veronica-btn').addEventListener('click',doVeronica);
-$('veronica-input').addEventListener('keydown',e=>{if(e.key==='Enter')doVeronica();});
-
-$('theme-btn').addEventListener('click',()=>$('theme-overlay').classList.add('visible'));
-$('theme-done').addEventListener('click',()=>$('theme-overlay').classList.remove('visible'));
-$('theme-overlay').addEventListener('click',e=>{if(e.target===$('theme-overlay'))$('theme-overlay').classList.remove('visible');});
-document.querySelectorAll('.theme-opt').forEach(el=>el.addEventListener('click',()=>applyTheme(el.dataset.t)));
-
-$('log-btn').addEventListener('click',()=>{renderLog();$('log-overlay').classList.add('visible');});
-$('log-close').addEventListener('click',()=>$('log-overlay').classList.remove('visible'));
-$('log-overlay').addEventListener('click',e=>{if(e.target===$('log-overlay'))$('log-overlay').classList.remove('visible');});
-$('log-clear').addEventListener('click',()=>{connLog=[];renderLog();});
-
-// ── Boot ──
 showHome();
 </script>
 </body>
